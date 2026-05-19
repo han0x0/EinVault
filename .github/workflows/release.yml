@@ -93,8 +93,7 @@ jobs:
             --severity CRITICAL,HIGH \
             --ignore-unfixed \
             --exit-code 1 \
-            --vuln-type os,library \
-            --skip-db-update \
+            --pkg-types os,library \
             "$IMAGE"
 
       - name: Scan image with Trivy (linux/arm64)
@@ -106,8 +105,7 @@ jobs:
             --severity CRITICAL,HIGH \
             --ignore-unfixed \
             --exit-code 1 \
-            --vuln-type os,library \
-            --skip-db-update \
+            --pkg-types os,library \
             "$IMAGE"
 
       - name: Attest build provenance
