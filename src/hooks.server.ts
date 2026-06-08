@@ -7,6 +7,7 @@ import { logOidcBootStatus } from '$lib/server/auth/oidc';
 import {
 	S3_CONFIG,
 	logImmichBootStatus,
+	logPaperlessBootStatus,
 	logStorageBootStatus,
 	logDeprecatedEnvWarnings,
 	logVideoTranscodeBootStatus,
@@ -19,6 +20,7 @@ import { startNotifyScheduler } from '$lib/server/notify/scheduler';
 logOidcBootStatus();
 logStorageBootStatus();
 logImmichBootStatus();
+logPaperlessBootStatus();
 logDeprecatedEnvWarnings();
 logVideoTranscodeBootStatus();
 logSmtpBootStatus();
@@ -102,7 +104,7 @@ const securityHeaders: Handle = async ({ event, resolve }) => {
 };
 
 // asset routes skip cookie refresh so responses stay cacheable
-const ASSET_PATHS = ['/api/avatars/', '/api/photos/'];
+const ASSET_PATHS = ['/api/avatars/', '/api/photos/', '/api/documents/'];
 
 const authContext: Handle = async ({ event, resolve }) => {
 	const isAsset = ASSET_PATHS.some((p) => event.url.pathname.startsWith(p));

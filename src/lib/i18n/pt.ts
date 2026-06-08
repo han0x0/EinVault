@@ -161,6 +161,7 @@ const messages: Record<keyof Messages, string> = {
 	'error.invalidGifFile': 'Ficheiro GIF inválido',
 	'error.maxMediaExceeded': 'Máximo de {max} fotos ou vídeos por dia',
 	'error.requestBodyTooLarge': 'Pedido demasiado grande',
+	'error.maxDocumentsExceeded': 'Limite de documentos atingido (máx. {max} por companheiro)',
 
 	// Navigation
 	'nav.dashboard': 'Painel',
@@ -168,6 +169,7 @@ const messages: Record<keyof Messages, string> = {
 	'nav.journal': 'Diário',
 	'nav.health': 'Saúde',
 	'nav.reminders': 'Lembretes',
+	'nav.documents': 'Documentos',
 	'nav.settings': 'Definições',
 	'nav.admin': 'Administração',
 	'nav.signOut': 'Terminar sessão',
@@ -752,6 +754,8 @@ const messages: Record<keyof Messages, string> = {
 	'aria.close': 'Fechar',
 	'aria.previousMedia': 'Mídia anterior',
 	'aria.nextMedia': 'Próxima mídia',
+	'aria.previousPage': 'Página anterior',
+	'aria.nextPage': 'Próxima página',
 	'aria.viewPhoto': 'Ver foto de {name}',
 
 	// Email: password reset
@@ -787,7 +791,53 @@ const messages: Record<keyof Messages, string> = {
 	'immich.picker.close': 'Fechar seletor',
 	'immich.picker.loadError': 'Não foi possível carregar a biblioteca do Immich.',
 	'immich.picker.button': 'Escolher do Immich',
-	'immich.picker.pickFailed': 'Não foi possível anexar o item do Immich.'
+	'immich.picker.pickFailed': 'Não foi possível anexar o item do Immich.',
+
+	// Paperless picker
+	'paperless.picker.title': 'Escolher do Paperless',
+	'paperless.picker.tagScoped': 'A mostrar documentos com a etiqueta configurada.',
+	'paperless.picker.empty': 'Nenhum documento encontrado no Paperless.',
+	'paperless.picker.searchPlaceholder': 'Pesquisar documentos…',
+	'paperless.picker.cancel': 'Cancelar',
+	'paperless.picker.close': 'Fechar seletor',
+	'paperless.picker.loadError': 'Não foi possível carregar a biblioteca do Paperless.',
+	'paperless.picker.button': 'Adicionar do Paperless',
+	'paperless.picker.pickFailed': 'Não foi possível anexar o documento do Paperless.',
+
+	// Page: Documents
+	'page.documents.title': 'Documentos',
+	'page.documents.archivedNotice': '{name} está arquivado. Modo de leitura.',
+	'page.documents.empty': 'Ainda não há documentos.',
+	'page.documents.upload': 'Carregar documento',
+	'page.documents.uploading': 'A carregar…',
+	'page.documents.dropHint': 'PDF ou imagem, até {max}MB',
+	'page.documents.filterAll': 'Todas as categorias',
+	'page.documents.linkedEvent': 'Evento de saúde associado',
+	'page.documents.noLinkedEvent': 'Sem associação',
+	'page.documents.download': 'Transferir',
+	'page.documents.view': 'Ver',
+	'page.documents.delete': 'Eliminar',
+	'page.documents.deleteConfirmBody':
+		'O documento será removido do EinVault. Os documentos do Paperless não são eliminados do Paperless.',
+	'page.documents.editTitle': 'Editar documento',
+	'page.documents.labelTitle': 'Título',
+	'page.documents.labelCategory': 'Categoria',
+	'page.documents.labelDate': 'Data do documento',
+	'page.documents.save': 'Guardar',
+	'page.documents.saveFailed': 'Não foi possível guardar as alterações.',
+	'page.documents.uploadFailed': 'Falha no carregamento.',
+	'page.documents.previewLoading': 'A carregar pré-visualização…',
+	'page.documents.previewFailed': 'Não foi possível mostrar a pré-visualização. Use Transferir.',
+	'page.documents.pageOf': 'Página {page} de {total}',
+	'page.documents.fromPaperless': 'Paperless',
+
+	// Enum: Document categories
+	'documents.category.receipt': 'Recibo',
+	'documents.category.invoice': 'Fatura',
+	'documents.category.medical': 'Médico',
+	'documents.category.insurance': 'Seguro',
+	'documents.category.ownership': 'Propriedade',
+	'documents.category.other': 'Outro'
 
 	// Meta
 } satisfies Record<keyof Messages, string>;

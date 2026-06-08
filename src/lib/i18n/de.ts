@@ -164,6 +164,7 @@ const messages: Record<keyof Messages, string> = {
 	'error.invalidGifFile': 'Ungültige GIF-Datei',
 	'error.maxMediaExceeded': 'Maximal {max} Fotos oder Videos pro Tag',
 	'error.requestBodyTooLarge': 'Anfrage zu groß',
+	'error.maxDocumentsExceeded': 'Dokumentlimit erreicht (max. {max} pro Begleiter)',
 
 	// Navigation
 	'nav.dashboard': 'Übersicht',
@@ -171,6 +172,7 @@ const messages: Record<keyof Messages, string> = {
 	'nav.journal': 'Tagebuch',
 	'nav.health': 'Gesundheit',
 	'nav.reminders': 'Erinnerungen',
+	'nav.documents': 'Dokumente',
 	'nav.settings': 'Einstellungen',
 	'nav.admin': 'Verwaltung',
 	'nav.signOut': 'Abmelden',
@@ -755,6 +757,8 @@ const messages: Record<keyof Messages, string> = {
 	'aria.close': 'Schließen',
 	'aria.previousMedia': 'Vorheriges Medium',
 	'aria.nextMedia': 'Nächstes Medium',
+	'aria.previousPage': 'Vorherige Seite',
+	'aria.nextPage': 'Nächste Seite',
 	'aria.viewPhoto': '{name}s Foto anzeigen',
 
 	// Email: password reset
@@ -790,7 +794,53 @@ const messages: Record<keyof Messages, string> = {
 	'immich.picker.close': 'Auswahl schließen',
 	'immich.picker.loadError': 'Immich-Bibliothek konnte nicht geladen werden.',
 	'immich.picker.button': 'Aus Immich auswählen',
-	'immich.picker.pickFailed': 'Immich-Inhalt konnte nicht angehängt werden.'
+	'immich.picker.pickFailed': 'Immich-Inhalt konnte nicht angehängt werden.',
+
+	// Paperless picker
+	'paperless.picker.title': 'Aus Paperless auswählen',
+	'paperless.picker.tagScoped': 'Es werden Dokumente mit dem konfigurierten Tag angezeigt.',
+	'paperless.picker.empty': 'Keine Dokumente in Paperless gefunden.',
+	'paperless.picker.searchPlaceholder': 'Dokumente suchen…',
+	'paperless.picker.cancel': 'Abbrechen',
+	'paperless.picker.close': 'Auswahl schließen',
+	'paperless.picker.loadError': 'Paperless-Bibliothek konnte nicht geladen werden.',
+	'paperless.picker.button': 'Aus Paperless hinzufügen',
+	'paperless.picker.pickFailed': 'Paperless-Dokument konnte nicht angehängt werden.',
+
+	// Page: Documents
+	'page.documents.title': 'Dokumente',
+	'page.documents.archivedNotice': '{name} ist archiviert. Nur-Lese-Modus.',
+	'page.documents.empty': 'Noch keine Dokumente.',
+	'page.documents.upload': 'Dokument hochladen',
+	'page.documents.uploading': 'Wird hochgeladen…',
+	'page.documents.dropHint': 'PDF oder Bild, bis zu {max}MB',
+	'page.documents.filterAll': 'Alle Kategorien',
+	'page.documents.linkedEvent': 'Verknüpftes Gesundheitsereignis',
+	'page.documents.noLinkedEvent': 'Nicht verknüpft',
+	'page.documents.download': 'Herunterladen',
+	'page.documents.view': 'Ansehen',
+	'page.documents.delete': 'Löschen',
+	'page.documents.deleteConfirmBody':
+		'Das Dokument wird aus EinVault entfernt. Paperless-Dokumente werden nicht aus Paperless gelöscht.',
+	'page.documents.editTitle': 'Dokument bearbeiten',
+	'page.documents.labelTitle': 'Titel',
+	'page.documents.labelCategory': 'Kategorie',
+	'page.documents.labelDate': 'Dokumentdatum',
+	'page.documents.save': 'Speichern',
+	'page.documents.saveFailed': 'Änderungen konnten nicht gespeichert werden.',
+	'page.documents.uploadFailed': 'Upload fehlgeschlagen.',
+	'page.documents.previewLoading': 'Vorschau wird geladen…',
+	'page.documents.previewFailed': 'Vorschau konnte nicht angezeigt werden. Bitte herunterladen.',
+	'page.documents.pageOf': 'Seite {page} von {total}',
+	'page.documents.fromPaperless': 'Paperless',
+
+	// Enum: Document categories
+	'documents.category.receipt': 'Quittung',
+	'documents.category.invoice': 'Rechnung',
+	'documents.category.medical': 'Medizinisch',
+	'documents.category.insurance': 'Versicherung',
+	'documents.category.ownership': 'Eigentum',
+	'documents.category.other': 'Sonstiges'
 
 	// Meta
 } satisfies Record<keyof Messages, string>;
