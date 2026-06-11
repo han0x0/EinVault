@@ -57,9 +57,9 @@ export const POST: RequestHandler = async ({ request, params, locals }) => {
 		entry = created;
 	}
 
-	const photoId = generateId(15);
+	const mediaId = generateId(15);
 	const ext = safeExtFromMime(asset.originalMimeType, asset.originalFileName);
-	const filename = `${photoId}.${ext}`;
+	const filename = `${mediaId}.${ext}`;
 	const entryId = entry.id;
 	const loggedBy = locals.user.id;
 
@@ -76,13 +76,13 @@ export const POST: RequestHandler = async ({ request, params, locals }) => {
 				.from(schema.journalPhotos)
 				.where(eq(schema.journalPhotos.entryId, entryId))
 				.all();
-			const photoCount = rows[0]?.value ?? 0;
-			if (photoCount >= MAX_DAILY_MEDIA) {
+			const mediaCount = rows[0]?.value ?? 0;
+			if (mediaCount >= MAX_DAILY_MEDIA) {
 				return { ok: false as const };
 			}
 			tx.insert(schema.journalPhotos)
 				.values({
-					id: photoId,
+					id: mediaId,
 					entryId,
 					filename,
 					provider: 'immich',
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request, params, locals }) => {
 	}
 
 	const created = await db.query.journalPhotos.findFirst({
-		where: eq(schema.journalPhotos.id, photoId),
+		where: eq(schema.journalPhotos.id, mediaId),
 		with: { logger: { columns: { displayName: true } } }
 	});
 

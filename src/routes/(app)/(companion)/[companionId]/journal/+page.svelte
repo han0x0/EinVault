@@ -76,12 +76,12 @@
 		});
 	}
 
-	function photoUrl(photo: Entry['photos'][0], date: string) {
-		return `/api/photos/journal/${companion.id}/${date}/${photo.filename}`;
+	function mediaUrl(item: Entry['photos'][0], date: string) {
+		return `/api/photos/journal/${companion.id}/${date}/${item.filename}`;
 	}
 
-	function posterUrl(photo: Entry['photos'][0], date: string) {
-		return photo.posterKey ? `${photoUrl(photo, date)}?poster` : null;
+	function posterUrl(item: Entry['photos'][0], date: string) {
+		return item.posterKey ? `${mediaUrl(item, date)}?poster` : null;
 	}
 
 	function monthKey(date: string) {
@@ -89,23 +89,23 @@
 	}
 
 	// Lightbox
-	let lightboxPhotos = $state<Entry['photos']>([]);
+	let lightboxMedia = $state<Entry['photos']>([]);
 	let lightboxDate = $state('');
 	let lightboxIndex = $state(0);
-	let lightboxPhoto = $derived(lightboxPhotos.length > 0 ? lightboxPhotos[lightboxIndex] : null);
+	let lightboxItem = $derived(lightboxMedia.length > 0 ? lightboxMedia[lightboxIndex] : null);
 	let lightboxEl = $state<HTMLElement | null>(null);
 	let lightboxTrigger = $state<HTMLElement | null>(null);
 
-	async function openLightbox(photos: Entry['photos'], date: string, index: number) {
+	async function openLightbox(items: Entry['photos'], date: string, index: number) {
 		lightboxTrigger = document.activeElement as HTMLElement | null;
-		lightboxPhotos = photos;
+		lightboxMedia = items;
 		lightboxDate = date;
 		lightboxIndex = index;
 		await tick();
 		lightboxEl?.focus();
 	}
 	function closeLightbox() {
-		lightboxPhotos = [];
+		lightboxMedia = [];
 		lightboxDate = '';
 		lightboxIndex = 0;
 		tick().then(() => lightboxTrigger?.focus());
@@ -114,12 +114,12 @@
 		if (lightboxIndex > 0) lightboxIndex--;
 	}
 	function lightboxNext() {
-		if (lightboxIndex < lightboxPhotos.length - 1) lightboxIndex++;
+		if (lightboxIndex < lightboxMedia.length - 1) lightboxIndex++;
 	}
 
 	function handleLightboxKey(e: KeyboardEvent) {
 		if (e.key === 'Escape') {
-			if (lightboxPhoto) {
+			if (lightboxItem) {
 				closeLightbox();
 				return;
 			}
@@ -128,7 +128,7 @@
 				return;
 			}
 		}
-		if (!lightboxPhoto) return;
+		if (!lightboxItem) return;
 		if (e.key === 'ArrowLeft') lightboxPrev();
 		else if (e.key === 'ArrowRight') lightboxNext();
 	}
@@ -204,7 +204,7 @@
 <svelte:window onkeydown={handleLightboxKey} />
 
 <!-- Lightbox -->
-{#if lightboxPhoto}
+{#if lightboxItem}
 	<div
 		bind:this={lightboxEl}
 		role="dialog"
@@ -225,15 +225,15 @@
 			class="relative max-w-4xl w-full"
 		>
 			<div class="flex items-center justify-between mb-2">
-				{#if lightboxPhotos.length > 1}
-					<span class="text-sm text-white/60">{lightboxIndex + 1} / {lightboxPhotos.length}</span>
+				{#if lightboxMedia.length > 1}
+					<span class="text-sm text-white/60">{lightboxIndex + 1} / {lightboxMedia.length}</span>
 				{:else}
 					<span></span>
 				{/if}
 				<div class="flex items-center gap-1">
 					<a
-						href={photoUrl(lightboxPhoto, lightboxDate)}
-						download={lightboxPhoto.originalName ?? lightboxPhoto.filename}
+						href={mediaUrl(lightboxItem, lightboxDate)}
+						download={lightboxItem.originalName ?? lightboxItem.filename}
 						class="text-white/70 hover:text-white p-1 rounded"
 						aria-label={t(locale, 'aria.downloadMedia')}
 					>
@@ -251,24 +251,24 @@
 			</div>
 
 			<div class="relative">
-				{#if lightboxPhoto.mediaType === 'video'}
+				{#if lightboxItem.mediaType === 'video'}
 					<JournalVideo
-						src={photoUrl(lightboxPhoto, lightboxDate)}
-						poster={posterUrl(lightboxPhoto, lightboxDate)}
-						status={lightboxPhoto.status}
-						downloadName={lightboxPhoto.originalName}
-						label={lightboxPhoto.originalName ?? undefined}
+						src={mediaUrl(lightboxItem, lightboxDate)}
+						poster={posterUrl(lightboxItem, lightboxDate)}
+						status={lightboxItem.status}
+						downloadName={lightboxItem.originalName}
+						label={lightboxItem.originalName ?? undefined}
 						autoplay
 						class="max-h-[78vh] w-full object-contain rounded-lg bg-black"
 					/>
 				{:else}
 					<img
-						src={photoUrl(lightboxPhoto, lightboxDate)}
-						alt={lightboxPhoto.originalName ?? ''}
+						src={mediaUrl(lightboxItem, lightboxDate)}
+						alt={lightboxItem.originalName ?? ''}
 						class="max-h-[78vh] w-full object-contain rounded-lg"
 					/>
 				{/if}
-				{#if lightboxPhotos.length > 1}
+				{#if lightboxMedia.length > 1}
 					<button
 						type="button"
 						onclick={lightboxPrev}
@@ -284,9 +284,9 @@
 					<button
 						type="button"
 						onclick={lightboxNext}
-						disabled={lightboxIndex === lightboxPhotos.length - 1}
+						disabled={lightboxIndex === lightboxMedia.length - 1}
 						class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center text-white transition-opacity bg-black/40 {lightboxIndex ===
-						lightboxPhotos.length - 1
+						lightboxMedia.length - 1
 							? 'opacity-20 cursor-default'
 							: 'opacity-70 hover:opacity-100'}"
 						aria-label={t(locale, 'aria.nextMedia')}
@@ -296,14 +296,14 @@
 				{/if}
 			</div>
 
-			{#if lightboxPhoto.notes}
+			{#if lightboxItem.notes}
 				<div class="prose prose-sm prose-invert max-w-none mt-3 text-center text-sm">
-					{@html renderMarkdown(lightboxPhoto.notes)}
+					{@html renderMarkdown(lightboxItem.notes)}
 				</div>
 			{/if}
-			{#if lightboxPhoto.logger}
+			{#if lightboxItem.logger}
 				<div class="mt-2 flex justify-center">
-					<ByLine user={lightboxPhoto.logger} variant="inline" class="!text-white/60 !ml-0" />
+					<ByLine user={lightboxItem.logger} variant="inline" class="!text-white/60 !ml-0" />
 				</div>
 			{/if}
 		</div>
@@ -495,7 +495,7 @@
 						</div>
 					</CardHeader>
 
-					<!-- Photos -->
+					<!-- Media -->
 					{#if entry.photos.length > 0}
 						<div
 							class="grid gap-0.5 {entry.photos.length === 1
@@ -504,32 +504,30 @@
 									? 'grid-cols-2'
 									: 'grid-cols-3'}"
 						>
-							{#each entry.photos as photo, i (photo.id)}
+							{#each entry.photos as item, i (item.id)}
 								<button
 									type="button"
 									onclick={() => openLightbox(entry.photos, entry.date, i)}
 									class="relative block overflow-hidden {entry.photos.length === 1
 										? 'aspect-video'
 										: 'aspect-square'} hover:opacity-95 transition-opacity"
-									title={photo.originalName ??
+									title={item.originalName ??
 										t(
 											locale,
-											photo.mediaType === 'video'
-												? 'page.journal.videoAlt'
-												: 'page.journal.photoAlt'
+											item.mediaType === 'video' ? 'page.journal.videoAlt' : 'page.journal.photoAlt'
 										)}
 								>
-									{#if photo.mediaType === 'video'}
-										{#if photo.posterKey}
+									{#if item.mediaType === 'video'}
+										{#if item.posterKey}
 											<img
-												src={posterUrl(photo, entry.date)}
-												alt={photo.originalName ?? ''}
+												src={posterUrl(item, entry.date)}
+												alt={item.originalName ?? ''}
 												class="w-full h-full object-cover pointer-events-none"
 												loading="lazy"
 											/>
 										{:else}
 											<video
-												src={photoUrl(photo, entry.date)}
+												src={mediaUrl(item, entry.date)}
 												preload="metadata"
 												muted
 												playsinline
@@ -546,8 +544,8 @@
 										</span>
 									{:else}
 										<img
-											src={photoUrl(photo, entry.date)}
-											alt={photo.originalName ?? ''}
+											src={mediaUrl(item, entry.date)}
+											alt={item.originalName ?? ''}
 											class="w-full h-full object-cover"
 											loading="lazy"
 										/>
