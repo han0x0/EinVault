@@ -35,6 +35,82 @@ export function parseDailyEventType(value: string): DailyEventType | null {
 	return parseEnum(value, DAILY_EVENT_TYPES);
 }
 
+// Daily event duration: positive whole minutes, capped at the form's 480 max.
+export function parseDurationMinutes(value: unknown): number | null {
+	if (value === null || value === undefined || value === '') return null;
+	const n = typeof value === 'number' ? value : parseInt(String(value), 10);
+	if (!Number.isInteger(n) || n < 1) return null;
+	return Math.min(n, 480);
+}
+
+// Logged-at timestamp from a datetime-local field or an ISO string. Null when
+// absent, unparseable, or outside a sane window (later than tomorrow to allow
+// for clock skew, or older than 5 years) — callers default to "now", so a
+// device can't date an event to the year 9999 and pollute the timeline/feed.
+const LOGGED_AT_SKEW_MS = 24 * 60 * 60 * 1000;
+const LOGGED_AT_MAX_AGE_MS = 5 * 365 * 24 * 60 * 60 * 1000;
+export function parseLoggedAt(value: unknown): Date | null {
+	if (typeof value !== 'string' || !value.trim()) return null;
+	const d = new Date(value);
+	const t = d.getTime();
+	if (Number.isNaN(t)) return null;
+	const now = Date.now();
+	if (t > now + LOGGED_AT_SKEW_MS || t < now - LOGGED_AT_MAX_AGE_MS) return null;
+	return d;
+}
+
+// Timestamp parser for historical records (health events, weight entries).
+// Unlike parseLoggedAt it has NO lower bound — a vaccination or adoption record
+// can be years old — but still rejects a value more than a day in the future.
+export function parseRecordTimestamp(value: unknown): Date | null {
+	if (typeof value !== 'string' || !value.trim()) return null;
+	const d = new Date(value);
+	const t = d.getTime();
+	if (Number.isNaN(t)) return null;
+	if (t > Date.now() + LOGGED_AT_SKEW_MS) return null;
+	return d;
+}
+
+// Short user-facing names (quick log buttons, API token labels)
+
+export function parseShortName(value: unknown): string | null {
+	if (typeof value !== 'string') return null;
+	const name = value.trim();
+	return name.length >= 1 && name.length <= 60 ? name : null;
+}
+
+// True when a string exceeds a hard character cap (see $lib/textLimits). Shared
+// by the API and form write paths so oversized free-text is rejected before it
+// reaches storage.
+export function exceedsLen(value: unknown, max: number): boolean {
+	return typeof value === 'string' && value.length > max;
+}
+
+// Array of non-empty string ids from a JSON body or FormData.getAll, capped so
+// a hostile payload can't fan out unbounded work.
+export function parseIdArray(value: unknown, max = 50): string[] {
+	if (!Array.isArray(value)) return [];
+	return [
+		...new Set(
+			value.filter((v): v is string => typeof v === 'string' && v.trim().length > 0).slice(0, max)
+		)
+	];
+}
+
+// Type guard for a JSON request body that is a non-null object.
+export function isJsonObject(b: unknown): b is Record<string, unknown> {
+	return typeof b === 'object' && b !== null && !Array.isArray(b);
+}
+
+// Companion target ids from an API body accepting either `companionIds` (array)
+// or a singular `companionId`. Same cap as parseIdArray.
+export function parseCompanionTargets(body: {
+	companionIds?: unknown;
+	companionId?: unknown;
+}): string[] {
+	return parseIdArray(Array.isArray(body.companionIds) ? body.companionIds : [body.companionId]);
+}
+
 // Health event type
 
 export type HealthEventType = 'vet_visit' | 'vaccination' | 'medication' | 'procedure' | 'other';

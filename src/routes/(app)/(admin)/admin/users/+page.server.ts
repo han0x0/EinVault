@@ -11,6 +11,8 @@ import { getAppSettings, setRequire2fa } from '$lib/server/app-settings';
 import type { Require2fa } from '$lib/server/app-settings';
 import { adminResetTwoFactor } from '$lib/server/auth/enrollment';
 import { isTwoFactorConfigured } from '$lib/server/auth/totp-crypto';
+import { notifyApiAccessChanged } from '$lib/server/api-access';
+import { API_TOKENS_ENABLED } from '$lib/server/env';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/auth/login');
@@ -49,7 +51,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		shifts,
 		currentUserId: locals.user.id,
 		require2fa,
-		twoFactorAvailable
+		twoFactorAvailable,
+		apiTokensEnabled: API_TOKENS_ENABLED
 	};
 };
 
@@ -116,6 +119,36 @@ export const actions: Actions = {
 		if (!newIsActive) {
 			await invalidateAllUserSessions(userId);
 		}
+
+		return { toggleSuccess: true };
+	},
+
+	toggleApiAccess: async ({ request, locals }) => {
+		if (locals.user?.role !== 'admin') error(403, t(locals.locale, 'error.forbidden'));
+		// The whole API (and this control) is off when the killswitch is set.
+		if (!API_TOKENS_ENABLED) error(404, t(locals.locale, 'error.notFound'));
+
+		const data = await request.formData();
+		const userId = String(data.get('userId') ?? '');
+
+		const user = await db.query.users.findFirst({ where: eq(schema.users.id, userId) });
+		if (!user) return fail(404, { toggleError: t(locals.locale, 'error.userNotFound') });
+		// Admins always hold API access; the switch only exists for members/caretakers.
+		if (user.role === 'admin') {
+			return fail(400, { toggleError: t(locals.locale, 'error.cannotRevokeAdminApiAccess') });
+		}
+
+		const granted = !user.apiAccessEnabled;
+		await db
+			.update(schema.users)
+			.set({ apiAccessEnabled: granted })
+			.where(eq(schema.users.id, userId));
+
+		// Best-effort, recipient-locale notification; fire-and-forget so a slow or
+		// unreachable SMTP/ntfy host can't stall the admin's toggle response.
+		notifyApiAccessChanged(user, granted).catch((err) =>
+			console.error(`[api-access] notification for user ${user.id} failed:`, err)
+		);
 
 		return { toggleSuccess: true };
 	},

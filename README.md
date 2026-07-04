@@ -5,7 +5,7 @@
 # EinVault
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.7-7348f4.svg)](https://github.com/davefatkin/EinVault/releases)
+[![Version](https://img.shields.io/badge/version-1.1.0-7348f4.svg)](https://github.com/davefatkin/EinVault/releases)
 
 EinVault is a private, self-hosted companion health and care tracker built for homelabs. Track health records, daily activities, and care schedules for your animal companions. All data stays on your hardware. No cloud, no telemetry, no external accounts.
 
@@ -41,6 +41,7 @@ Want a look before you self-host? There's a read-only demo at **[demo.einvault.a
   - [Logout](#logout)
   - [Provider notes](#provider-notes)
 - [Two-factor authentication (2FA)](#two-factor-authentication-2fa)
+- [Bearer-token API (optional)](#bearer-token-api-optional)
 - [Adding a new locale](#adding-a-new-locale)
 - [Stack](#stack)
 - [License](#license)
@@ -51,6 +52,8 @@ Want a look before you self-host? There's a read-only demo at **[demo.einvault.a
 - **Daily journal:** per-companion entries with mood tracking, photo and video uploads, and a configurable daily media limit (default 5)
 - **Health tracking:** vet visits, vaccinations, medications, procedures, and weight history
 - **Activity logging:** walks, meals, bathroom trips, treats, play sessions, and grooming
+- **Quick logs:** personal one-tap buttons for repetitive events, reorderable and shareable with other users
+- **Bearer-token API:** log activities and journal entries, record health and weight, manage reminders, and read companion, shift, and roster data headlessly from smart buttons, scripts, and devices
 - **Reminders:** recurring and one-time reminders for medications, vaccinations, grooming, and more
 - **Search:** full-text search across journals, health, activity, reminders, documents, and media, with `@companion`, `#type`, and date-range filters (members and admins)
 - **Calendar feed:** subscribe to health events, reminders (with recurrence), and shifts from any calendar app or Home Assistant via a personal, revocable ICS URL
@@ -85,7 +88,7 @@ Requires Docker Engine 24+, Docker Compose v2, and a reverse proxy for TLS (Cadd
 
 Download [`docker-compose.prod.yml`](docker-compose.prod.yml) and set your domain before starting:
 
-**`ORIGIN`** — your public domain:
+**`ORIGIN`** is your public domain:
 
 ```yaml
 ORIGIN: https://einvault.yourdomain.com
@@ -114,11 +117,12 @@ Everything else in the compose file can be edited directly:
 | `REMINDER_UNDO_SECONDS`       | `7`                 | Default undo window (seconds) when dismissing a Reminder. `0` disables the undo window. Each user can override in their settings.                          |
 | `CALENDAR_FEED_HISTORY_DAYS`  | `90`                | Days of past events the calendar feed includes. `0` includes all history (larger feeds).                                                                   |
 | `CALENDAR_FEED_ENABLED`       | `true`              | Set `false` to disable the calendar feed endpoint entirely.                                                                                                |
+| `API_TOKENS_ENABLED`          | `true`              | Set `false` to disable the Bearer-token API (token creation and the `/api/logs`, `/api/journal`, `/api/quick-logs` endpoints) entirely.                    |
 | `DEMO_MODE`                   | `false`             | Enable read-only public demo mode. See [Running a demo instance](#running-a-demo-instance).                                                                |
 | `user`                        | `1000:1000`         | UID:GID the container runs as. Change if your `./data` directory has different ownership.                                                                  |
 | `./data` volume               | `./data`            | Where the database and uploads are stored on the host.                                                                                                     |
 | `DATABASE_URL`                | `/data/einvault.db` | Database path inside the container. Unlikely to need changing.                                                                                             |
-| `TWOFA_ENC_KEY`               | —                   | 32-byte base64 key (`openssl rand -base64 32`) that encrypts stored TOTP secrets. Required to enable two-factor authentication.                            |
+| `TWOFA_ENC_KEY`               | -                   | 32-byte base64 key (`openssl rand -base64 32`) that encrypts stored TOTP secrets. Required to enable two-factor authentication.                            |
 
 The calendar feed URL contains a secret token that authenticates the subscriber. Avoid logging full `/api/calendar/` request URLs at the reverse proxy, as the token would appear in plain text in your access logs.
 
@@ -153,11 +157,11 @@ By default, avatars and journal photos are written to `./data/uploads`. You can 
 |                          | Default | Description                                                                                                                                                               |
 | ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `STORAGE_BACKEND`        | `local` | `local` writes to `./data/uploads`. `s3` writes new uploads to the configured bucket. Reads always honor the per-row provider, so switching does not invalidate old rows. |
-| `S3_ENDPOINT`            | —       | Full endpoint URL, e.g. `https://s3.garage.example.com` or `https://s3.us-east-1.amazonaws.com`.                                                                          |
-| `S3_BUCKET`              | —       | Bucket name. Must already exist and should be private.                                                                                                                    |
+| `S3_ENDPOINT`            | -       | Full endpoint URL, e.g. `https://s3.garage.example.com` or `https://s3.us-east-1.amazonaws.com`.                                                                          |
+| `S3_BUCKET`              | -       | Bucket name. Must already exist and should be private.                                                                                                                    |
 | `S3_REGION`              | `auto`  | Region. For non-AWS providers, `auto` usually works.                                                                                                                      |
-| `S3_ACCESS_KEY_ID`       | —       | Access key. Scope it to this bucket only.                                                                                                                                 |
-| `S3_SECRET_ACCESS_KEY`   | —       | Secret key.                                                                                                                                                               |
+| `S3_ACCESS_KEY_ID`       | -       | Access key. Scope it to this bucket only.                                                                                                                                 |
+| `S3_SECRET_ACCESS_KEY`   | -       | Secret key.                                                                                                                                                               |
 | `S3_FORCE_PATH_STYLE`    | `false` | Set to `true` for Garage, MinIO, and older S3 deployments. Leave `false` for AWS and R2.                                                                                  |
 | `S3_PRESIGN_TTL_SECONDS` | `300`   | Lifetime of presigned download URLs. Shorter is stricter, longer improves browser cache reuse on reload.                                                                  |
 
@@ -169,9 +173,9 @@ When `IMMICH_URL` and `IMMICH_API_KEY` are set, members and admins get a "Pick f
 
 |                   | Default | Description                                                                                                                                   |
 | ----------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `IMMICH_URL`      | —       | Base URL of your Immich server, e.g. `http://immich.local:2283`. No trailing slash. Required if `IMMICH_API_KEY` is set.                      |
-| `IMMICH_API_KEY`  | —       | API key. Required permissions: `asset.read`, `asset.view`. Generate in Immich → Account Settings → API Keys. Required if `IMMICH_URL` is set. |
-| `IMMICH_ALBUM_ID` | —       | If set, the picker only shows assets in this album. If unset, the picker shows the user's most recent assets across the whole library.        |
+| `IMMICH_URL`      | -       | Base URL of your Immich server, e.g. `http://immich.local:2283`. No trailing slash. Required if `IMMICH_API_KEY` is set.                      |
+| `IMMICH_API_KEY`  | -       | API key. Required permissions: `asset.read`, `asset.view`. Generate in Immich → Account Settings → API Keys. Required if `IMMICH_URL` is set. |
+| `IMMICH_ALBUM_ID` | -       | If set, the picker only shows assets in this album. If unset, the picker shows the user's most recent assets across the whole library.        |
 
 ### Documents
 
@@ -185,9 +189,9 @@ The token can read every document its Paperless user can see, and any member can
 
 |                       | Default | Description                                                                                                                                                         |
 | --------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PAPERLESS_URL`       | —       | Base URL of your Paperless-ngx instance, e.g. `http://paperless.local:8000`. No trailing slash. Required if `PAPERLESS_API_TOKEN` is set.                           |
-| `PAPERLESS_API_TOKEN` | —       | API token. Generate in Paperless under Settings → "My Profile". Use a dedicated user limited to the documents you want visible. Required if `PAPERLESS_URL` is set. |
-| `PAPERLESS_TAG_ID`    | —       | If set, only documents carrying this Paperless tag ID can be searched and imported. Strongly recommended; without it every member can search the whole library.     |
+| `PAPERLESS_URL`       | -       | Base URL of your Paperless-ngx instance, e.g. `http://paperless.local:8000`. No trailing slash. Required if `PAPERLESS_API_TOKEN` is set.                           |
+| `PAPERLESS_API_TOKEN` | -       | API token. Generate in Paperless under Settings → "My Profile". Use a dedicated user limited to the documents you want visible. Required if `PAPERLESS_URL` is set. |
+| `PAPERLESS_TAG_ID`    | -       | If set, only documents carrying this Paperless tag ID can be searched and imported. Strongly recommended; without it every member can search the whole library.     |
 
 ### SMTP email (optional)
 
@@ -197,12 +201,12 @@ When `SMTP_HOST` and `SMTP_FROM` are both set, EinVault enables outbound email a
 
 |               | Default | Description                                                                                                                     |
 | ------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `SMTP_HOST`   | —       | SMTP server hostname. Required (with `SMTP_FROM`) to enable email.                                                              |
+| `SMTP_HOST`   | -       | SMTP server hostname. Required (with `SMTP_FROM`) to enable email.                                                              |
 | `SMTP_PORT`   | `587`   | SMTP port. Use `465` with `SMTP_SECURE=true` for implicit TLS, or `587` (default) for STARTTLS.                                 |
 | `SMTP_SECURE` | `false` | `true` = implicit TLS (port 465). `false` = STARTTLS upgrade on connect.                                                        |
-| `SMTP_USER`   | —       | SMTP username. Leave unset for unauthenticated relays.                                                                          |
-| `SMTP_PASS`   | —       | SMTP password. Leave unset for unauthenticated relays.                                                                          |
-| `SMTP_FROM`   | —       | RFC 5322 From address shown to recipients, e.g. `EinVault <einvault@example.com>`. Required (with `SMTP_HOST`) to enable email. |
+| `SMTP_USER`   | -       | SMTP username. Leave unset for unauthenticated relays.                                                                          |
+| `SMTP_PASS`   | -       | SMTP password. Leave unset for unauthenticated relays.                                                                          |
+| `SMTP_FROM`   | -       | RFC 5322 From address shown to recipients, e.g. `EinVault <einvault@example.com>`. Required (with `SMTP_HOST`) to enable email. |
 
 ### ntfy push notifications (optional)
 
@@ -212,8 +216,8 @@ On public servers like ntfy.sh, the topic name is the only access control. Users
 
 |                           | Default | Description                                                                                                                                                                   |
 | ------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NTFY_URL`                | —       | ntfy server base URL, e.g. `https://ntfy.sh` or a self-hosted instance. No topic in the URL.                                                                                  |
-| `NTFY_TOKEN`              | —       | Bearer token for self-hosted ntfy servers with auth enabled. Used for every publish regardless of topic.                                                                      |
+| `NTFY_URL`                | -       | ntfy server base URL, e.g. `https://ntfy.sh` or a self-hosted instance. No topic in the URL.                                                                                  |
+| `NTFY_TOKEN`              | -       | Bearer token for self-hosted ntfy servers with auth enabled. Used for every publish regardless of topic.                                                                      |
 | `NOTIFY_SCAN_INTERVAL_MS` | `60000` | How often the notification scheduler scans for due reminders and shift alerts, in milliseconds. Values below 250 fall back to the default. Mainly useful for automated tests. |
 
 ### Data and backup
@@ -228,7 +232,7 @@ docker compose -f docker-compose.prod.yml start einvault
 
 ### Running a demo instance
 
-Set `DEMO_MODE=true` and start with a fresh data volume. On boot the app self-provisions a sample dataset and re-anchors all dates to "now" daily, so the demo always looks recent. The login page becomes a role picker (admin / member / caretaker) that bypasses password auth; all write endpoints are blocked.
+Set `DEMO_MODE=true` and start with a fresh data volume. On boot the app self-provisions a sample dataset and re-anchors all dates to "now" daily, so the demo always looks recent. The login page becomes a role picker (admin / member / caretaker) that bypasses password auth; all write endpoints are blocked. The Bearer-token API is forced off (`API_TOKENS_ENABLED` is ignored), since a read-only public demo has no reason to mint write-capable tokens.
 
 Leave all integration and mail variables unset (`OIDC_*`, `S3_*`, `IMMICH_*`, `PAPERLESS_*`, `SMTP_*`, `NTFY_*`). `DEMO_MODE` disables OIDC at the source, but the others are independent outbound-fetch or SSRF-adjacent surface that the read-only guard does not cover.
 
@@ -240,7 +244,7 @@ ADDRESS_HEADER=CF-Connecting-IP
 
 If your setup uses `X-Forwarded-For` with multiple hops, also set `XFF_DEPTH` to the correct depth. Without the right header, the rate limit collapses all visitors into one bucket.
 
-Cloudflare caching: the app emits `Cache-Control: private, no-store` on authenticated HTML in demo mode, so do not add page rules that cache HTML. Hashed `/_app/immutable/*` assets are safe to cache aggressively — that is where the bandwidth saving comes from.
+Cloudflare caching: the app emits `Cache-Control: private, no-store` on authenticated HTML in demo mode, so do not add page rules that cache HTML. Hashed `/_app/immutable/*` assets are safe to cache aggressively; that is where the bandwidth saving comes from.
 
 ### Container hardening
 
@@ -433,9 +437,9 @@ TWOFA_ENC_KEY=<the generated value>
 
 **Admin enforcement.** Admins can require 2FA at Admin → Users → Security. Three levels are available:
 
-- **Off** — 2FA is optional. Users can enable it but are not required to.
-- **Admins only** — Admin accounts must enroll before they can use the app.
-- **Everyone** — All non-OIDC accounts must enroll.
+- **Off**: 2FA is optional. Users can enable it but are not required to.
+- **Admins only**: Admin accounts must enroll before they can use the app.
+- **Everyone**: All non-OIDC accounts must enroll.
 
 When enforcement is active, un-enrolled users are redirected to `/2fa-setup` after login and cannot access the rest of the app until they complete enrollment.
 
@@ -445,13 +449,61 @@ When enforcement is active, un-enrolled users are redirected to `/2fa-setup` aft
 
 ---
 
+## Bearer-token API (optional)
+
+EinVault exposes an HTTP API so smart buttons, scripts, and other devices can log events, record health and weight, complete reminders, and read companion, shift, and roster data without a browser session. It is enabled by default; set `API_TOKENS_ENABLED=false` to turn off token creation and every endpoint below.
+
+**Creating a token.** Go to Settings → API tokens, create a token, and copy it. The raw token is shown only once. A token acts as the user who created it and inherits their permissions, so a caretaker's token still requires an active shift and only reaches assigned companions, and can only write the current day's journal. Each token has an **access** level, either full (read and write) or write-only, which hides companion profile details (`GET /api/companions` returns just id, name, species, and active state), plus an optional **expiry**. Use **Rotate** to re-key a device: it mints a fresh token with the same name and access and revokes the old one.
+
+**Per-user access.** While the API is enabled, every user has API access by default. Admins grant or revoke access for individual members and caretakers from Admin → Users → Manage; revoking disables all of that user's tokens at once without deleting them, and granting re-enables them. Admins always retain their own access.
+
+**Authenticating.** Send the token in an `Authorization: Bearer <token>` header on every request.
+
+```bash
+curl -X POST https://einvault.example.com/api/logs \
+  -H "Authorization: Bearer $EINVAULT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"companionId": "abc123", "type": "walk", "durationMinutes": 30}'
+```
+
+**Endpoints.**
+
+| Method & path                       | Body                                                                         | Purpose                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /api/companions`               | -                                                                            | List the companions the token user may target (members/admins: all active; caretakers: assigned). Returns `{ companions: [...] }` with each companion's full profile. Use this to discover `companionId`s.                                                                                                                                                          |
+| `GET /api/companions/{companionId}` | -                                                                            | Get one companion. Full-scope tokens get the full profile; write-scope tokens get the minimal projection (no PII). An id the token can't reach reads as `404`, same as unknown, so it can't be used to probe which ids exist; an archived companion reads as `404` too, not as a retrievable "deleted" record. Returns `{ companion }`.                             |
+| `POST /api/logs`                    | `{ companionId or companionIds, type, notes?, durationMinutes?, loggedAt? }` | Log a daily event. `type` is one of `walk`, `meal`, `bathroom`, `treat`, `play`, `grooming`, `other`. Returns `201 { ids, eventGroupId }`.                                                                                                                                                                                                                          |
+| `GET /api/logs`                     | query `?companionId=&date=` (`date` optional `YYYY-MM-DD`)                   | Read back logged events for a companion, newest first. Returns `{ events: [...] }`.                                                                                                                                                                                                                                                                                 |
+| `GET /api/journal`                  | query `?companionId=&date=` (`date` defaults to today)                       | Read back the journal entry for a companion/day. Returns `{ entry }` (or `{ entry: null }`).                                                                                                                                                                                                                                                                        |
+| `POST /api/journal`                 | `{ companionId, date?, body?, mood? }`                                       | Upsert the journal entry for a day (`date` defaults to today). Sending both `body` and `mood` replaces them; omitting a key leaves that field untouched, so a mood-only or body-only post won't wipe the other. Caretaker tokens may only write today. Returns `201 { id, companionId, date }`.                                                                     |
+| `GET /api/quick-logs`               | -                                                                            | List the token user's enabled quick logs so a device can discover their ids. Returns `{ quickLogs: [...] }`.                                                                                                                                                                                                                                                        |
+| `POST /api/quick-logs/{id}/execute` | `{ companionIds?, loggedAt? }` (optional)                                    | Run a configured quick log. With no body it uses the quick log's remembered/assigned companions, so a physical button only needs the URL and token. Returns `201 { ids }`.                                                                                                                                                                                          |
+| `POST /api/health-events`           | `{ companionId, type, title, notes?, occurredAt?, vetName?, vetClinic? }`    | Log a health event. `type` is one of `vet_visit`, `vaccination`, `medication`, `procedure`, `other`. `occurredAt` defaults to now and may be historical. Returns `201 { id, companionId }`.                                                                                                                                                                         |
+| `GET /api/health-events`            | query `?companionId=&date=` (`date` optional `YYYY-MM-DD`)                   | Read back health events for a companion, newest first by `occurredAt`. Returns `{ events: [...] }`.                                                                                                                                                                                                                                                                 |
+| `POST /api/weight`                  | `{ companionId, weight, unit, notes?, recordedAt? }`                         | Log a weight entry. `unit` is `kg` or `lbs`. `recordedAt` defaults to now and may be historical. Returns `201 { id, companionId }`.                                                                                                                                                                                                                                 |
+| `GET /api/weight`                   | query `?companionId=`                                                        | Read back weight entries for a companion, newest first by `recordedAt`. Returns `{ entries: [...] }`.                                                                                                                                                                                                                                                               |
+| `GET /api/reminders`                | query `?companionId=&status=due\|all`                                        | List reminders. Default `status=due` lists not-yet-completed reminders oldest-due first; `status=all` also includes completed reminders, ordered by due date (newest first). Omit `companionId` to list across every companion the token user may access. Returns `{ reminders: [...] }`.                                                                           |
+| `POST /api/reminders/{id}/complete` | -                                                                            | Mark a reminder done. A recurring reminder spawns its next occurrence. Returns `200 { id, completedAt, nextReminderId }` (`nextReminderId` is `null` for a one-off).                                                                                                                                                                                                |
+| `GET /api/shifts`                   | query `?from=&to=` (both optional `YYYY-MM-DD`)                              | List the caretaker shift schedule, most recent shifts first (up to 200; use `from`/`to` to window further back). Admins and members see every shift; a caretaker sees only their own. Returns `{ shifts: [...] }`.                                                                                                                                                  |
+| `GET /api/users`                    | -                                                                            | List the user roster, scoped to what the token user may see: an admin sees everyone, a member sees everyone except admins, a caretaker sees only themselves. Returns `{ users: [...] }` with `id`, `displayName`, `role`, `isActive` per user, plus `username` (omitted for a member-role token, since a member has no need to see other users' login identifiers). |
+
+Quick logs are the customizable one-tap buttons you set up under Settings → Quick logs; pairing one with `POST /api/quick-logs/{id}/execute` keeps all configuration (event type, note, companions) in the app so the device stays a dumb trigger.
+
+**Pagination.** The list endpoints (`GET /api/logs`, `/api/health-events`, `/api/weight`, `/api/reminders`, `/api/shifts`, `/api/users`) accept `?limit=&offset=` (`limit` 1-200, default 50; `offset` 0-100000, default 0) and return a `hasMore` boolean alongside the array.
+
+**Reliability.** Write endpoints accept an optional `Idempotency-Key` header. A retried request that carries the same key and body replays the original response instead of writing a duplicate (a device on a flaky network can safely retry); reusing a key with a different body returns `409`. Error responses are JSON `{ code, message }`; branch on the stable `code` (e.g. `noActiveShift`, `notAssigned`, `noTargets`, `noteTooLong`, `journalTooLong`, `invalidPagination`), not the localized `message`. Request bodies are strict: an unknown field is rejected with `400 invalidBody`. Free text is bounded: notes cap at 5000 characters and journal bodies at 20000.
+
+**Docs.** `/api/docs` is a self-hosted, zero-dependency reference for every endpoint above: request/response shapes, status codes, and a per-endpoint Try-It panel that fires real requests with a token you paste in. It's generated from the same schemas the server validates against, so it can't drift from what an endpoint actually accepts. The raw document is `/api/openapi.json` (OpenAPI 3.1), for anyone who wants to feed it into their own client or codegen; that endpoint is gated by `API_TOKENS_ENABLED` like the rest of the API, and `/api/docs` shows a load error when it's off.
+
+---
+
 ## Adding a new locale
 
-1. Copy `src/lib/i18n/en.ts` to `src/lib/i18n/{code}.ts` (e.g. `ja.ts`) and translate every value. The file must `export default { ... } satisfies Record<keyof Messages, string>` — the compiler will catch any missing keys.
+1. Copy `src/lib/i18n/en.ts` to `src/lib/i18n/{code}.ts` (e.g. `ja.ts`) and translate every value. The file must `export default { ... } satisfies Record<keyof Messages, string>`; the compiler will catch any missing keys.
 2. In `src/lib/i18n/index.ts`: import the new file, add the code to the `Locale` type, `SUPPORTED_LOCALES`, `LOCALE_LABELS`, and `catalogs`.
 3. In `src/lib/server/db/schema.ts`: add the code to the `locale` enum on the `users` table.
 
-No migration is needed — SQLite text columns don't enforce enums at the database level.
+No migration is needed; SQLite text columns don't enforce enums at the database level.
 
 > **Note:** Non-English translations were generated by Claude (Anthropic) and may contain errors. Corrections via pull request are welcome.
 

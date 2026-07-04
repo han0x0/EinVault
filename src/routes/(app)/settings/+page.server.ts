@@ -15,8 +15,18 @@ import { isNtfyEnabled } from '$lib/server/notify/ntfy';
 import { isSecureRequest } from '$lib/server/auth';
 import { t, SUPPORTED_LOCALES } from '$lib/i18n';
 import type { Locale } from '$lib/i18n';
-import { REMINDER_UNDO_SECONDS_DEFAULT, CALENDAR_FEED_ENABLED } from '$lib/server/env';
+import {
+	REMINDER_UNDO_SECONDS_DEFAULT,
+	CALENDAR_FEED_ENABLED,
+	API_TOKENS_ENABLED
+} from '$lib/server/env';
 import { enableFeedToken, disableFeedToken } from '$lib/server/calendarToken';
+import { listApiTokens } from '$lib/server/api-tokens';
+import {
+	handleApiTokenCreate,
+	handleApiTokenRevoke,
+	handleApiTokenRotate
+} from '$lib/server/api-token-actions';
 import {
 	totpBegin,
 	totpConfirm,
@@ -64,6 +74,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		ntfyEnabled: isNtfyEnabled(),
 		calendarFeedAvailable: CALENDAR_FEED_ENABLED,
 		calendarFeedEnabled: calUser?.calendarFeedToken != null,
+		apiTokensAvailable: API_TOKENS_ENABLED,
+		apiAccessEnabled: locals.user.apiAccessEnabled,
+		apiTokens: API_TOKENS_ENABLED ? await listApiTokens(locals.user.id) : [],
 		twoFactorAvailable,
 		twoFactorEnforced
 	};
@@ -176,6 +189,21 @@ export const actions: Actions = {
 		if (!locals.user) return fail(401);
 		await disableFeedToken(locals.user.id);
 		return { calendarDisabled: true };
+	},
+
+	apiTokenCreate: async ({ request, locals }) => {
+		if (!locals.user) return fail(401);
+		return handleApiTokenCreate(locals.user.id, request, locals.locale);
+	},
+
+	apiTokenRevoke: async ({ request, locals }) => {
+		if (!locals.user) return fail(401);
+		return handleApiTokenRevoke(locals.user.id, request, locals.locale);
+	},
+
+	apiTokenRotate: async ({ request, locals }) => {
+		if (!locals.user) return fail(401);
+		return handleApiTokenRotate(locals.user.id, request, locals.locale);
 	},
 
 	totpBegin: async ({ locals, request }) => {

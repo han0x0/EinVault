@@ -2,10 +2,18 @@ import { error, fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { t } from '$lib/i18n';
 import { db, schema } from '$lib/server/db';
-import { eq, and, gte, inArray } from 'drizzle-orm';
-import { generateId } from '$lib/server/utils';
-import { parseDailyEventType } from '$lib/server/validation';
+import { eq, and, gte } from 'drizzle-orm';
+import {
+	parseDailyEventType,
+	parseDurationMinutes,
+	parseLoggedAt,
+	parseIdArray,
+	exceedsLen
+} from '$lib/server/validation';
+import { MAX_NOTE_LEN } from '$lib/server/env';
 import { getShiftStatus } from '$lib/server/shifts';
+import { logDailyEvent } from '$lib/server/daily-events';
+import { failCareError } from '$lib/server/care-errors';
 
 export const load: PageServerLoad = async ({ params, parent, locals }) => {
 	const { companions, isOnShift } = await parent();
@@ -54,56 +62,26 @@ export const actions: Actions = {
 
 		const data = await request.formData();
 		const type = parseDailyEventType(String(data.get('type') ?? ''));
-		const notes = String(data.get('notes') ?? '').trim() || null;
-		const durationRaw = data.get('durationMinutes');
-		const durationMinutes = durationRaw ? parseInt(String(durationRaw)) : null;
-		const loggedAt = data.get('loggedAt') ? new Date(String(data.get('loggedAt'))) : new Date();
+		const rawNotes = String(data.get('notes') ?? '');
+		if (exceedsLen(rawNotes, MAX_NOTE_LEN))
+			return fail(400, { error: t(locals.locale, 'error.noteTooLong', { max: MAX_NOTE_LEN }) });
+		const notes = rawNotes.trim() || null;
+		const durationMinutes = parseDurationMinutes(data.get('durationMinutes'));
+		const loggedAt = parseLoggedAt(data.get('loggedAt')) ?? new Date();
 
 		if (!type) return fail(400, { error: t(locals.locale, 'error.typeRequired') });
 
-		// "Also log for" — only companions this caretaker is also assigned to, and active.
-		const additionalIds = data
-			.getAll('additionalCompanionIds')
-			.map((v) => String(v))
-			.filter((v) => v && v !== params.companionId);
-
-		let validAdditionalIds: string[] = [];
-		if (additionalIds.length > 0) {
-			const assignedRows = await db.query.companionCaretakers.findMany({
-				where: and(
-					eq(schema.companionCaretakers.userId, locals.user.id),
-					inArray(schema.companionCaretakers.companionId, additionalIds)
-				),
-				columns: { companionId: true }
-			});
-			const assignedIds = assignedRows.map((r) => r.companionId);
-			if (assignedIds.length > 0) {
-				const activeRows = await db.query.companions.findMany({
-					where: and(
-						inArray(schema.companions.id, assignedIds),
-						eq(schema.companions.isActive, true)
-					),
-					columns: { id: true }
-				});
-				validAdditionalIds = activeRows.map((r) => r.id);
-			}
-		}
-
-		const targetIds = [params.companionId, ...validAdditionalIds];
-		const eventGroupId = targetIds.length > 1 ? generateId(15) : null;
-
-		await db.insert(schema.dailyEvents).values(
-			targetIds.map((cid) => ({
-				id: generateId(15),
-				companionId: cid,
-				type,
-				notes,
-				durationMinutes,
-				loggedAt,
-				loggedBy: locals.user!.id,
-				eventGroupId
-			}))
+		// "Also log for": unassigned/archived extras are dropped by logDailyEvent.
+		const additionalIds = parseIdArray(data.getAll('additionalCompanionIds')).filter(
+			(v) => v !== params.companionId
 		);
+
+		const result = await logDailyEvent(
+			{ id: locals.user.id, role: locals.user.role },
+			[params.companionId, ...additionalIds],
+			{ type, notes, durationMinutes, loggedAt }
+		);
+		if (!result.ok) return failCareError(result.code, locals.locale, 'error');
 
 		return { success: true };
 	},

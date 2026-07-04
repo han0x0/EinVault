@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
+	import QuickLogButtons from '$lib/components/log/QuickLogButtons.svelte';
 	import CompanionAvatar from '$lib/components/CompanionAvatar.svelte';
 	import WeightSparkline from '$lib/components/WeightSparkline.svelte';
 	import LocalTime from '$lib/components/LocalTime.svelte';
@@ -25,7 +26,7 @@
 	import { enhance } from '$app/forms';
 	import { tick } from 'svelte';
 	import { renderMarkdown, stripMarkdown } from '$lib/markdown';
-	import { ACTIVITY_ICONS, REMINDER_ICONS } from '$lib/i18n/labels';
+	import { ACTIVITY_ICONS, REMINDER_ICONS, activityTypeOptions } from '$lib/i18n/labels';
 	import { REMINDER_TO_HEALTH_TYPE } from '$lib/health';
 	import ReminderCompleteButtons from '$lib/components/reminders/ReminderCompleteButtons.svelte';
 	import { t, getLocale } from '$lib/i18n';
@@ -37,7 +38,7 @@
 	import { careStatus } from '$lib/careStatus';
 	import DocumentPreview from '$lib/components/DocumentPreview.svelte';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 	let {
 		companion,
 		recentHealth,
@@ -65,6 +66,11 @@
 	let today = localDateISO();
 
 	const ACTIVITY_ICON = ACTIVITY_ICONS;
+
+	// Quick log shortcuts, the same trio the caretaker view offers.
+	const quickLogTypes = activityTypeOptions(locale).filter((o) =>
+		['walk', 'meal', 'bathroom'].includes(o.value)
+	);
 
 	// Care status derived from outstanding reminders
 	let status = $derived(
@@ -767,6 +773,41 @@
 			{/if}
 		</CardContent>
 	</Card>
+
+	<!-- Quick log shortcuts -->
+	{#if companion.isActive !== false}
+		<section>
+			<h2 class="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+				{t(locale, 'page.companion.sectionQuickLog')}
+			</h2>
+			<div class="mb-2">
+				<QuickLogButtons
+					buttons={data.quickLogButtons}
+					companions={data.companions ?? []}
+					primaryCompanionId={companion.id}
+					{form}
+				/>
+			</div>
+			<div class="flex gap-2">
+				{#each quickLogTypes as opt (opt.value)}
+					<a
+						href="/{companion.id}/log?type={opt.value}"
+						class="flex-1 flex flex-col items-center gap-1 rounded-xl border border-border bg-card p-3 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+					>
+						<span class="text-lg">{opt.icon}</span>
+						<span>{opt.label}</span>
+					</a>
+				{/each}
+				<a
+					href="/{companion.id}/log"
+					class="flex-1 flex flex-col items-center gap-1 rounded-xl border border-primary/30 bg-primary/5 p-3 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
+				>
+					<span class="text-lg">+</span>
+					<span>{t(locale, 'page.companion.logActivity')}</span>
+				</a>
+			</div>
+		</section>
+	{/if}
 
 	<!-- Recent activity timeline (full width) -->
 	<Card>

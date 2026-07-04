@@ -6,6 +6,17 @@ import { localDateISO } from '$lib/date';
 import { completeReminder } from '$lib/server/reminders';
 import { t } from '$lib/i18n';
 import { healthEventPrefillUrl, REMINDER_TO_HEALTH_TYPE } from '$lib/health';
+import {
+	parseDailyEventType,
+	parseDurationMinutes,
+	parseLoggedAt,
+	parseIdArray,
+	exceedsLen
+} from '$lib/server/validation';
+import { MAX_NOTE_LEN } from '$lib/server/env';
+import { logDailyEvent } from '$lib/server/daily-events';
+import { listQuickLogButtons } from '$lib/server/quick-logs';
+import { handleQuickLogExecute } from '$lib/server/quick-log-actions';
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 const RECENT_EVENT_LIMIT = 30;
@@ -63,11 +74,17 @@ export const load: PageServerLoad = async ({ locals, parent }) => {
 
 	const todayJournalByCompanion = Object.fromEntries(todayJournal.map((j) => [j.companionId, j]));
 
+	const quickLogButtons = await listQuickLogButtons({
+		id: locals.user.id,
+		role: locals.user.role
+	});
+
 	return {
 		upcomingReminders,
 		recentDaily,
 		recentHealth,
-		todayJournalByCompanion
+		todayJournalByCompanion,
+		quickLogButtons
 	};
 };
 
@@ -109,5 +126,42 @@ export const actions: Actions = {
 		}
 
 		return { completeSuccess: true };
+	},
+
+	quickLog: async ({ request, locals }) => {
+		if (!locals.user) return fail(401, { error: t(locals.locale, 'error.unauthorized') });
+		if (locals.user.role === 'caretaker')
+			return fail(403, { error: t(locals.locale, 'error.forbidden') });
+
+		const data = await request.formData();
+		const type = parseDailyEventType(String(data.get('type') ?? ''));
+		const rawNotes = String(data.get('notes') ?? '');
+		if (exceedsLen(rawNotes, MAX_NOTE_LEN))
+			return fail(400, { error: t(locals.locale, 'error.noteTooLong', { max: MAX_NOTE_LEN }) });
+		const notes = rawNotes.trim() || null;
+		const durationMinutes = parseDurationMinutes(data.get('durationMinutes'));
+		const loggedAt = parseLoggedAt(data.get('loggedAt')) ?? new Date();
+
+		if (!type) return fail(400, { error: t(locals.locale, 'error.typeRequired') });
+
+		const companionIds = parseIdArray(data.getAll('companionIds'));
+		if (companionIds.length === 0)
+			return fail(400, { error: t(locals.locale, 'page.log.selectAtLeastOne') });
+
+		const result = await logDailyEvent(
+			{ id: locals.user.id, role: locals.user.role },
+			companionIds,
+			{ type, notes, durationMinutes, loggedAt }
+		);
+		if (!result.ok) {
+			return fail(404, { error: t(locals.locale, 'error.companionNotFound') });
+		}
+
+		return { success: true };
+	},
+
+	executeQuickLog: async ({ request, locals }) => {
+		if (!locals.user) return fail(401, { error: t(locals.locale, 'error.unauthorized') });
+		return handleQuickLogExecute(locals.user, request, locals.locale);
 	}
 };
