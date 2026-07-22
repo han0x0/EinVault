@@ -540,8 +540,9 @@
 								window.location.href = `/${companion.id}`;
 							}
 						}}
-						class="group block rounded-xl border bg-card p-4 hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-					>
+						class="group relative block overflow-hidden rounded-xl border bg-card pt-5 px-4 pb-4 shadow-sm hover:shadow-md hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+				>
+					<span class="absolute inset-x-0 top-0 h-1 bg-brand-gradient" aria-hidden="true"></span>
 						<!-- Card header: avatar + name + care status badge -->
 						<div class="flex items-center gap-3 mb-3">
 							<CompanionAvatar
