@@ -549,9 +549,9 @@ const messages: Record<keyof Messages, string> = {
 	'overview.greeting': 'Hola, {name}',
 	'overview.needsAttention': 'Necesita atención',
 	'overview.allCaughtUp': 'Todo al día',
-		'overview.speciesFilter.label': 'Filter companions by species',
+	'overview.speciesFilter.label': 'Filter companions by species',
 	'overview.speciesFilter.all': 'All',
-'overview.heading.companions': 'Tus compañeros',
+	'overview.heading.companions': 'Tus compañeros',
 	'overview.companions.addStart': 'Crear nuevo registro',
 	'overview.firstRun.title': 'Bienvenido a EinVault',
 	'overview.firstRun.body':
@@ -1025,7 +1025,7 @@ const messages: Record<keyof Messages, string> = {
 	// Aria labels
 	'aria.caretakerNav': 'Navegación del cuidador',
 	'aria.adminNav': 'Secciones de administración',
-	'aria.einvaultHome': 'Inicio de EinVault',
+	'aria.herpHome': 'Inicio de Herp',
 	'aria.goToSignIn': 'Ir a iniciar sesión',
 	'aria.mainNav': 'Navegación principal',
 	'aria.deleteEntry': 'Eliminar entrada',

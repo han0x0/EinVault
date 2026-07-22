@@ -2,14 +2,30 @@
   <img src="docs/ein.svg" alt="Ein, the Herp mascot" width="120" />
 </p>
 
-# Herp
+# Herp (中文定制版 · 由汉堡开发)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.0-7348f4.svg)](https://github.com/davefatkin/Herp/releases)
+[![Forked from davefatkin/Herp](https://img.shields.io/badge/fork-davefatkin%2FHerp-7348f4.svg)](https://github.com/davefatkin/Herp)
 
-Herp is a private, self-hosted companion health and care tracker built for homelabs. Track health records, daily activities, and care schedules for your animal companions. All data stays on your hardware. No cloud, no telemetry, no external accounts.
+> **说明**:本仓库是 [davefatkin/Herp](https://github.com/davefatkin/Herp) 的个人汉化 fork。
+> 主要改动:默认界面语言改为中文,默认体重单位改为 kg 并新增克 (g) 选项,
+> 隐藏了德/西/法/意/葡五种欧洲语言(暂未翻译),其它功能与上游保持一致。
+>
+> 上游项目:Herp is a private, self-hosted companion health and care tracker built for homelabs.
+> Track health records, daily activities, and care schedules for your animal companions.
+> All data stays on your hardware. No cloud, no telemetry, no external accounts.
 
-Want a look before you self-host? There's a read-only demo at **[demo.Herp.app](https://demo.Herp.app)**. Pick a role and explore; nothing you do there sticks.
+想先看看效果?上游有只读公开 demo:**[demo.Herp.app](https://demo.Herp.app)** — 选一个角色就能浏览,操作不会保留。
+
+**本 fork 的新增内容(在原项目基础上)**:
+
+- 默认语言:`en` → `zh`(`DEFAULT_LOCALE`、用户表默认、首次访问解析都改为中文优先)
+- 默认体重单位:`lbs` → `kg`,并在所有相关表单(新建/编辑宠物、记录体重、编辑体重)增加 **克 (g)** 选项
+- `convertWeight()` 支持 `kg ↔ g ↔ lbs` 三向换算,体重图表自动用最新一条记录的单位换算后渲染
+- 新增 `AGENTS.md` 贡献者指南
+- Vite dev 服务器默认绑定 `0.0.0.0`,手机/局域网设备可直接访问 `http://<电脑 IP>:5173/`
+
+**上游原版的所有功能保持不变**(2FA / OIDC / Bearer-token API / Docker / Immich / Paperless / SMTP / ntfy / 视频转码等)。
 
 ## Contents
 
@@ -107,22 +123,22 @@ Open your domain and follow the `/setup` prompt to create your admin account.
 
 Everything else in the compose file can be edited directly:
 
-|                               | Default             | Description                                                                                                                                                |
-| ----------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TZ`                          | `UTC`               | Container timezone. Set to your local timezone (e.g. `America/New_York`, `Europe/London`) so dates and times display correctly.                            |
-| `UPLOAD_MAX_MB`               | `10`                | Maximum size in MB for image (photo and avatar) uploads. `BODY_SIZE_LIMIT` is derived from the larger of this and `VIDEO_MAX_MB` at container start.       |
-| `VIDEO_MAX_MB`                | `100`               | Maximum size in MB for journal video uploads. Videos are stored as-is unless transcoding is enabled (see below).                                           |
-| `MAX_DAILY_MEDIA`             | `5`                 | Maximum number of journal photos and videos (combined) per companion per day. (Renamed from `MAX_DAILY_PHOTOS`, still honored with a deprecation warning.) |
-| `MAX_DOCUMENTS_PER_COMPANION` | `200`               | Maximum number of documents (uploads and Paperless references combined) stored per companion.                                                              |
-| `REMINDER_UNDO_SECONDS`       | `7`                 | Default undo window (seconds) when dismissing a Reminder. `0` disables the undo window. Each user can override in their settings.                          |
-| `CALENDAR_FEED_HISTORY_DAYS`  | `90`                | Days of past events the calendar feed includes. `0` includes all history (larger feeds).                                                                   |
-| `CALENDAR_FEED_ENABLED`       | `true`              | Set `false` to disable the calendar feed endpoint entirely.                                                                                                |
-| `API_TOKENS_ENABLED`          | `true`              | Set `false` to disable the Bearer-token API (token creation and the `/api/logs`, `/api/journal`, `/api/quick-logs` endpoints) entirely.                    |
-| `DEMO_MODE`                   | `false`             | Enable read-only public demo mode. See [Running a demo instance](#running-a-demo-instance).                                                                |
-| `user`                        | `1000:1000`         | UID:GID the container runs as. Change if your `./data` directory has different ownership.                                                                  |
-| `./data` volume               | `./data`            | Where the database and uploads are stored on the host.                                                                                                     |
+|                               | Default         | Description                                                                                                                                                |
+| ----------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TZ`                          | `UTC`           | Container timezone. Set to your local timezone (e.g. `America/New_York`, `Europe/London`) so dates and times display correctly.                            |
+| `UPLOAD_MAX_MB`               | `10`            | Maximum size in MB for image (photo and avatar) uploads. `BODY_SIZE_LIMIT` is derived from the larger of this and `VIDEO_MAX_MB` at container start.       |
+| `VIDEO_MAX_MB`                | `100`           | Maximum size in MB for journal video uploads. Videos are stored as-is unless transcoding is enabled (see below).                                           |
+| `MAX_DAILY_MEDIA`             | `5`             | Maximum number of journal photos and videos (combined) per companion per day. (Renamed from `MAX_DAILY_PHOTOS`, still honored with a deprecation warning.) |
+| `MAX_DOCUMENTS_PER_COMPANION` | `200`           | Maximum number of documents (uploads and Paperless references combined) stored per companion.                                                              |
+| `REMINDER_UNDO_SECONDS`       | `7`             | Default undo window (seconds) when dismissing a Reminder. `0` disables the undo window. Each user can override in their settings.                          |
+| `CALENDAR_FEED_HISTORY_DAYS`  | `90`            | Days of past events the calendar feed includes. `0` includes all history (larger feeds).                                                                   |
+| `CALENDAR_FEED_ENABLED`       | `true`          | Set `false` to disable the calendar feed endpoint entirely.                                                                                                |
+| `API_TOKENS_ENABLED`          | `true`          | Set `false` to disable the Bearer-token API (token creation and the `/api/logs`, `/api/journal`, `/api/quick-logs` endpoints) entirely.                    |
+| `DEMO_MODE`                   | `false`         | Enable read-only public demo mode. See [Running a demo instance](#running-a-demo-instance).                                                                |
+| `user`                        | `1000:1000`     | UID:GID the container runs as. Change if your `./data` directory has different ownership.                                                                  |
+| `./data` volume               | `./data`        | Where the database and uploads are stored on the host.                                                                                                     |
 | `DATABASE_URL`                | `/data/Herp.db` | Database path inside the container. Unlikely to need changing.                                                                                             |
-| `TWOFA_ENC_KEY`               | -                   | 32-byte base64 key (`openssl rand -base64 32`) that encrypts stored TOTP secrets. Required to enable two-factor authentication.                            |
+| `TWOFA_ENC_KEY`               | -               | 32-byte base64 key (`openssl rand -base64 32`) that encrypts stored TOTP secrets. Required to enable two-factor authentication.                            |
 
 The calendar feed URL contains a secret token that authenticates the subscriber. Avoid logging full `/api/calendar/` request URLs at the reverse proxy, as the token would appear in plain text in your access logs.
 
@@ -199,13 +215,13 @@ When `SMTP_HOST` and `SMTP_FROM` are both set, Herp enables outbound email and a
 
 `ORIGIN` must be set correctly: password reset links are built from it. Behind a reverse proxy, make sure `ORIGIN` matches the public URL users see.
 
-|               | Default | Description                                                                                                                     |
-| ------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `SMTP_HOST`   | -       | SMTP server hostname. Required (with `SMTP_FROM`) to enable email.                                                              |
-| `SMTP_PORT`   | `587`   | SMTP port. Use `465` with `SMTP_SECURE=true` for implicit TLS, or `587` (default) for STARTTLS.                                 |
-| `SMTP_SECURE` | `false` | `true` = implicit TLS (port 465). `false` = STARTTLS upgrade on connect.                                                        |
-| `SMTP_USER`   | -       | SMTP username. Leave unset for unauthenticated relays.                                                                          |
-| `SMTP_PASS`   | -       | SMTP password. Leave unset for unauthenticated relays.                                                                          |
+|               | Default | Description                                                                                                             |
+| ------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `SMTP_HOST`   | -       | SMTP server hostname. Required (with `SMTP_FROM`) to enable email.                                                      |
+| `SMTP_PORT`   | `587`   | SMTP port. Use `465` with `SMTP_SECURE=true` for implicit TLS, or `587` (default) for STARTTLS.                         |
+| `SMTP_SECURE` | `false` | `true` = implicit TLS (port 465). `false` = STARTTLS upgrade on connect.                                                |
+| `SMTP_USER`   | -       | SMTP username. Leave unset for unauthenticated relays.                                                                  |
+| `SMTP_PASS`   | -       | SMTP password. Leave unset for unauthenticated relays.                                                                  |
 | `SMTP_FROM`   | -       | RFC 5322 From address shown to recipients, e.g. `Herp <Herp@example.com>`. Required (with `SMTP_HOST`) to enable email. |
 
 ### ntfy push notifications (optional)
@@ -366,7 +382,7 @@ Register `https://<your-domain>/auth/oidc/callback` as an allowed redirect URI w
 | `OIDC_ISSUER_URL`    | IdP base URL. Discovery happens at `<issuer>/.well-known/openid-configuration`. e.g. `https://auth.example.com` |
 | `OIDC_CLIENT_ID`     | Client ID registered with your IdP.                                                                             |
 | `OIDC_CLIENT_SECRET` | Client secret. Omit for public clients (PKCE-only).                                                             |
-| `OIDC_REDIRECT_URI`  | Must match what's registered with the IdP. e.g. `https://Herp.yourdomain.com/auth/oidc/callback`            |
+| `OIDC_REDIRECT_URI`  | Must match what's registered with the IdP. e.g. `https://Herp.yourdomain.com/auth/oidc/callback`                |
 
 ### Optional variables
 
@@ -408,12 +424,12 @@ By default, logout destroys the local Herp session and returns the user to `/aut
 
 ### Provider notes
 
-| Provider      | Notes                                                                                                                                                                                               |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Authelia**  | Register the redirect URI under the OIDC client config. Set `client_secret_basic` (default) or `none` for public clients.                                                                           |
-| **Authentik** | Create an OAuth2/OIDC provider; scope mapping for `groups` is built-in. `OIDC_ADMIN_GROUPS` matches the `groups` claim directly.                                                                    |
+| Provider      | Notes                                                                                                                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Authelia**  | Register the redirect URI under the OIDC client config. Set `client_secret_basic` (default) or `none` for public clients.                                                                       |
+| **Authentik** | Create an OAuth2/OIDC provider; scope mapping for `groups` is built-in. `OIDC_ADMIN_GROUPS` matches the `groups` claim directly.                                                                |
 | **Keycloak**  | Add a "Group Membership" mapper to the client with token claim name `groups` and "Full group path" off. Herp does not read `realm_access.roles`. Add the redirect URI to "Valid Redirect URIs". |
-| **PocketID**  | Public-client first; omit `OIDC_CLIENT_SECRET`. Register the redirect URI in the client settings.                                                                                                   |
+| **PocketID**  | Public-client first; omit `OIDC_CLIENT_SECRET`. Register the redirect URI in the client settings.                                                                                               |
 
 ---
 
