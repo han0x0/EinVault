@@ -1,36 +1,21 @@
 import { getContext } from 'svelte';
 import en from './en';
-import it from './it';
-import de from './de';
-import es from './es';
-import fr from './fr';
-import pt from './pt';
 import zh from './zh';
 import type { MessageKey } from './en';
 
 export type { MessageKey };
 export type Locale = 'en' | 'it' | 'de' | 'es' | 'fr' | 'pt' | 'zh';
 
-export const SUPPORTED_LOCALES: Locale[] = ['de', 'en', 'es', 'fr', 'it', 'pt', 'zh'];
+export const SUPPORTED_LOCALES: Locale[] = ['en', 'zh'];
 export const DEFAULT_LOCALE: Locale = 'zh';
-export const LOCALE_LABELS: Record<Locale, string> = {
+export const LOCALE_LABELS: Partial<Record<Locale, string>> = {
 	en: 'English',
-	it: 'Italiano',
-	de: 'Deutsch',
-	es: 'Español',
-	fr: 'Français',
-	pt: 'Português',
 	zh: '中文'
 };
 
-const catalogs: Record<Locale, Record<string, string>> = {
+const catalogs: Partial<Record<Locale, Record<string, string>>> = {
 	en,
-	it,
-	zh,
-	de,
-	es,
-	fr,
-	pt
+	zh
 };
 
 /** Resolve a raw string to a supported locale. */
@@ -70,7 +55,8 @@ export function t(
 	params?: Record<string, string | number>
 ): string {
 	const catalog = catalogs[locale] ?? catalogs[DEFAULT_LOCALE];
-	let msg = catalog[key] ?? catalogs[DEFAULT_LOCALE][key] ?? key;
+	if (!catalog) return key;
+	let msg = catalog[key] ?? catalogs[DEFAULT_LOCALE]?.[key] ?? key;
 	if (params) {
 		for (const [k, v] of Object.entries(params)) {
 			msg = msg.replaceAll(`{${k}}`, () => String(v));

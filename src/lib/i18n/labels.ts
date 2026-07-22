@@ -58,7 +58,7 @@ export const ACTIVITY_SUBTYPE_ICONS: Record<string, string> = {
 	temp_humidity: '🌡️',
 	refused_food: '🚫',
 	soak: '💧',
-	brumation: '😴',
+	brumation: '😴'
 };
 
 export const ACTIVITY_HAS_DURATION: Record<string, boolean> = {
@@ -139,7 +139,9 @@ export function healthTypeOptions(locale: Locale) {
 }
 
 export function activityTypeOptions(locale: Locale) {
-	return (['walk', 'meal', 'bathroom', 'treat', 'play', 'grooming', 'reptileCare', 'other'] as const).map((v) => ({
+	return (
+		['walk', 'meal', 'bathroom', 'treat', 'play', 'grooming', 'reptileCare', 'other'] as const
+	).map((v) => ({
 		value: v,
 		icon: ACTIVITY_ICONS[v],
 		label: activityLabel(locale, v),

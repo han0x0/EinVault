@@ -234,7 +234,7 @@ const messages = {
 	'layout.caretaker.notOnShift': 'Not on shift. Next shift:',
 	'layout.caretaker.noUpcomingShifts': 'Not on shift. No upcoming shifts scheduled.',
 	'layout.caretaker.requiresActiveShift': 'requires active shift',
-	'layout.caretaker.shiftCalendarEvent': 'EinVault Shift',
+	'layout.caretaker.shiftCalendarEvent': 'Herp Shift',
 
 	// Page: 2FA
 	'page.twofa.title': 'Two-factor authentication',
@@ -300,11 +300,11 @@ const messages = {
 	'page.settings.defaultRecurrenceUpdated': '✓ Default recurrence updated.',
 	'page.settings.notificationsCard': 'Notifications',
 	'page.settings.notificationsDescription':
-		'Get emails from EinVault. Caretakers are only notified about reminders for companions assigned to them.',
+		'Get emails from Herp. Caretakers are only notified about reminders for companions assigned to them.',
 	'page.settings.notificationsDescriptionNtfy':
-		'Get push notifications from EinVault. Caretakers are only notified about reminders for companions assigned to them.',
+		'Get push notifications from Herp. Caretakers are only notified about reminders for companions assigned to them.',
 	'page.settings.notificationsDescriptionBoth':
-		'Get emails and push notifications from EinVault. Caretakers are only notified about reminders for companions assigned to them.',
+		'Get emails and push notifications from Herp. Caretakers are only notified about reminders for companions assigned to them.',
 	'page.settings.notifyReminderEmailLabel': 'Email me when a reminder is due',
 	'page.settings.notifyShiftEmailLabel': 'Email me 24 hours before a shift starts or ends',
 	'page.settings.notificationsUpdated': 'Notification settings updated.',
@@ -312,7 +312,7 @@ const messages = {
 		'Add an email address to your account to receive email notifications.',
 	'page.settings.ntfyTopicLabel': 'ntfy topic',
 	'page.settings.ntfyTopicHint':
-		'Pushes cover due reminders and shift alerts for what you can see in EinVault. They go to this topic on the ntfy server configured by your admin. Pick a long random name; anyone who knows it can subscribe. Leave empty to disable pushes.',
+		'Pushes cover due reminders and shift alerts for what you can see in Herp. They go to this topic on the ntfy server configured by your admin. Pick a long random name; anyone who knows it can subscribe. Leave empty to disable pushes.',
 	'page.settings.securityCard': 'Security',
 	'page.settings.twofaOn': 'Two-factor authentication is on.',
 	'page.settings.twofaOff': 'Add a second step at sign-in with an authenticator app.',
@@ -336,9 +336,9 @@ const messages = {
 	'page.settings.testSent': 'Test notification sent.',
 	'page.settings.testFailed': 'Test failed: {error}',
 	'error.testCooldown': 'Wait a few seconds before sending another test.',
-	'email.test.subject': 'EinVault test notification',
+	'email.test.subject': 'Herp test notification',
 	'email.test.body':
-		'This is a test notification from EinVault. If you are reading this, your notification settings work.',
+		'This is a test notification from Herp. If you are reading this, your notification settings work.',
 
 	// Page: settings (calendar feed)
 	'settings.calendar.title': 'Calendar Feed',
@@ -482,7 +482,7 @@ const messages = {
 	'page.companion.sexUnknown': 'Unknown',
 
 	// Page: companion new
-	'page.companion.new.pageTitle': 'Add companion | EinVault',
+	'page.companion.new.pageTitle': 'New companion • Herp',
 	'page.companion.new.heading': 'Add a companion',
 	'page.companion.new.subheading': 'Fill in what you know. You can always edit later.',
 	'page.companion.new.submit': 'Add Companion',
@@ -543,7 +543,7 @@ const messages = {
 	'overview.speciesFilter.all': 'All',
 	'overview.heading.companions': 'Your companions',
 	'overview.companions.addStart': 'Start a new vault',
-	'overview.firstRun.title': 'Welcome to EinVault',
+	'overview.firstRun.title': 'Welcome to Herp',
 	'overview.firstRun.body':
 		'Add your first companion to start their health record, journal, and daily care.',
 	'overview.firstRun.cta': 'Add your first companion',
@@ -962,12 +962,12 @@ const messages = {
 	'page.admin.apiAccessOffHint': "API access is revoked; all of this user's tokens are inactive.",
 	'page.admin.apiAccessRevoke': 'Revoke API access',
 	'page.admin.apiAccessGrant': 'Grant API access',
-	'email.apiAccess.grantedSubject': 'Your EinVault API access was granted',
+	'email.apiAccess.grantedSubject': 'Your Herp API access was granted',
 	'email.apiAccess.grantedBody':
-		'An administrator granted your account access to the EinVault API. You can now create API tokens in Settings.',
-	'email.apiAccess.revokedSubject': 'Your EinVault API access was revoked',
+		'An administrator granted your account access to the Herp API. You can now create API tokens in Settings.',
+	'email.apiAccess.revokedSubject': 'Your Herp API access was revoked',
 	'email.apiAccess.revokedBody':
-		"An administrator revoked your account's access to the EinVault API. Your API tokens will stop working until access is granted again.",
+		"An administrator revoked your account's access to the Herp API. Your API tokens will stop working until access is granted again.",
 	'error.invalidRequestBody': 'Invalid request body.',
 	'error.noCompanionsSelected': 'Select at least one companion.',
 	'error.noRecipientsSelected': 'Select at least one user.',
@@ -1006,7 +1006,7 @@ const messages = {
 	// Aria labels
 	'aria.caretakerNav': 'Caretaker navigation',
 	'aria.adminNav': 'Admin sections',
-	'aria.einvaultHome': 'EinVault home',
+	'aria.herpHome': 'Herp home',
 	'aria.goToSignIn': 'Go to sign in',
 	'aria.mainNav': 'Main navigation',
 	'aria.deleteEntry': 'Delete entry',
@@ -1032,10 +1032,10 @@ const messages = {
 	'aria.themeMode': '{label} mode',
 
 	// Email: password reset
-	'email.reset.subject': 'Reset your EinVault password',
+	'email.reset.subject': 'Reset your Herp password',
 	'email.reset.greeting': 'Hi {name},',
 	'email.reset.body':
-		'A password reset was requested for your EinVault account ({username}). Use the link below to choose a new password. The link expires in 30 minutes.',
+		'A password reset was requested for your Herp account ({username}). Use the link below to choose a new password. The link expires in 30 minutes.',
 	'email.reset.cta': 'Reset password',
 	'email.reset.ignore': 'If you did not request this, you can safely ignore this email.',
 
@@ -1045,9 +1045,9 @@ const messages = {
 	'email.reminder.greeting': 'Hi {name},',
 	'email.reminder.body': '{companion} has a reminder due: {title}',
 	'email.reminder.dueLine': 'Due: {due}',
-	'email.reminder.cta': 'Open EinVault',
+	'email.reminder.cta': 'View in Herp',
 	'email.reminder.footer':
-		'You are receiving this because reminder email notifications are enabled in your EinVault settings.',
+		'You are receiving this because reminder email notifications are enabled in your Herp settings.',
 
 	// Email: caretaker shift alerts
 	'email.shift.startSubject': 'Shift starting soon: {caretaker}',
@@ -1055,7 +1055,7 @@ const messages = {
 	'email.shift.startBody': '{caretaker} begins a care shift on {start}.',
 	'email.shift.endBody': '{caretaker} finishes a care shift on {end}.',
 	'email.shift.footer':
-		'You are receiving this because shift email notifications are enabled in your EinVault settings.',
+		'You are receiving this because shift email notifications are enabled in your Herp settings.',
 
 	// Search palette
 	'search.placeholder': 'Search journals, media, health, documents…',
@@ -1114,7 +1114,7 @@ const messages = {
 	'page.documents.view': 'View',
 	'page.documents.delete': 'Delete',
 	'page.documents.deleteConfirmBody':
-		'This removes the document from EinVault. Paperless documents are not deleted from Paperless.',
+		'This removes the document from Herp. Paperless documents are not deleted from Paperless.',
 	'page.documents.editTitle': 'Edit document',
 	'page.documents.labelTitle': 'Title',
 	'page.documents.labelCategory': 'Category',

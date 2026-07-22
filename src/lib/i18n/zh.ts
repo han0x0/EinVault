@@ -237,7 +237,7 @@ const messages = {
 	'layout.caretaker.notOnShift': '不在班',
 	'layout.caretaker.noUpcomingShifts': '暂无排班',
 	'layout.caretaker.requiresActiveShift': '需要当班才能操作',
-	'layout.caretaker.shiftCalendarEvent': '班次',
+	'layout.caretaker.shiftCalendarEvent': 'Herp 班次',
 
 	// Page: 2FA
 	'page.twofa.title': '双重认证',
@@ -303,11 +303,11 @@ const messages = {
 	'page.settings.defaultRecurrenceUpdated': '默认循环单位已更新',
 	'page.settings.notificationsCard': '通知',
 	'page.settings.notificationsDescription':
-		'Get emails from EinVault. Caretakers are only notified about reminders for companions assigned to them.',
+		'接收来自 Herp 的邮件提醒。值班员只会被通知分配给自己的宠物提醒。',
 	'page.settings.notificationsDescriptionNtfy':
-		'Get push notifications from EinVault. Caretakers are only notified about reminders for companions assigned to them.',
+		'接收来自 Herp 的推送通知。值班员只会被通知分配给自己的宠物提醒。',
 	'page.settings.notificationsDescriptionBoth':
-		'Get emails and push notifications from EinVault. Caretakers are only notified about reminders for companions assigned to them.',
+		'同时接收来自 Herp 的邮件和推送通知。值班员只会被通知分配给自己的宠物提醒。',
 	'page.settings.notifyReminderEmailLabel': '邮件接收提醒',
 	'page.settings.notifyShiftEmailLabel': '邮件接收班次通知',
 	'page.settings.notificationsUpdated': '通知设置已更新',
@@ -315,7 +315,7 @@ const messages = {
 		'Add an email address to your account to receive email notifications.',
 	'page.settings.ntfyTopicLabel': 'ntfy 主题',
 	'page.settings.ntfyTopicHint':
-		'Pushes cover due reminders and shift alerts for what you can see in EinVault. They go to this topic on the ntfy server configured by your admin. Pick a long random name; anyone who knows it can subscribe. Leave empty to disable pushes.',
+		'推送覆盖你能看到的过期提醒和班次提醒,会发送到你配置的 ntfy 服务器的此主题上。请使用一个长且随机的名字;任何知道这个名字的人都可以订阅。留空表示关闭推送。',
 	'page.settings.securityCard': '安全',
 	'page.settings.twofaOn': '双重认证已启用',
 	'page.settings.twofaOff': '双重认证未启用',
@@ -339,9 +339,9 @@ const messages = {
 	'page.settings.testSent': '测试通知已发送',
 	'page.settings.testFailed': '测试通知发送失败',
 	'error.testCooldown': '测试发送过于频繁,请稍后再试',
-	'email.test.subject': '[Herp] 测试邮件',
+	'email.test.subject': 'Herp 测试通知',
 	'email.test.body':
-		'This is a test notification from EinVault. If you are reading this, your notification settings work.',
+		'这是一条来自 Herp 的测试通知。如果你正在读这条消息,说明你的通知设置正常工作。',
 
 	// Page: settings (calendar feed)
 	'settings.calendar.title': '日历订阅',
@@ -485,7 +485,7 @@ const messages = {
 	'page.companion.sexUnknown': '未知',
 
 	// Page: companion new
-	'page.companion.new.pageTitle': '添加宠物',
+	'page.companion.new.pageTitle': '新建宠物 • Herp',
 	'page.companion.new.heading': '添加一只宠物',
 	'page.companion.new.subheading': '开始记录它的日常生活和健康',
 	'page.companion.new.submit': '添加',
@@ -965,12 +965,12 @@ const messages = {
 	'page.admin.apiAccessOffHint': '此用户无法创建 API Token',
 	'page.admin.apiAccessRevoke': '关闭 API 访问',
 	'page.admin.apiAccessGrant': '启用 API 访问',
-	'email.apiAccess.grantedSubject': '[Herp] API 访问已启用',
+	'email.apiAccess.grantedSubject': '你的 Herp API 访问权限已开通',
 	'email.apiAccess.grantedBody':
-		'An administrator granted your account access to the EinVault API. You can now create API tokens in Settings.',
-	'email.apiAccess.revokedSubject': '[Herp] API 访问已关闭',
+		'管理员已授予你的账号访问 Herp API 的权限。你现在可以在"设置"里创建 API 令牌。',
+	'email.apiAccess.revokedSubject': '你的 Herp API 访问权限已撤销',
 	'email.apiAccess.revokedBody':
-		"An administrator revoked your account's access to the EinVault API. Your API tokens will stop working until access is granted again.",
+		"An administrator revoked your account's access to the Herp API. Your API tokens will stop working until access is granted again.",
 	'error.invalidRequestBody': '请求体格式无效',
 	'error.noCompanionsSelected': '请选择宠物',
 	'error.noRecipientsSelected': '请选择接收人',
@@ -1009,7 +1009,7 @@ const messages = {
 	// Aria labels
 	'aria.caretakerNav': '照护导航',
 	'aria.adminNav': '管理员导航',
-	'aria.einvaultHome': 'Herp 首页',
+	'aria.herpHome': 'Herp 首页',
 	'aria.goToSignIn': '前往登录',
 	'aria.mainNav': '主导航',
 	'aria.deleteEntry': '删除条目',
@@ -1035,10 +1035,10 @@ const messages = {
 	'aria.themeMode': '主题模式',
 
 	// Email: password reset
-	'email.reset.subject': '[Herp] 重置密码',
+	'email.reset.subject': '重置你的 Herp 密码',
 	'email.reset.greeting': '你好,',
 	'email.reset.body':
-		'A password reset was requested for your EinVault account ({username}). Use the link below to choose a new password. The link expires in 30 minutes.',
+		'你的 Herp 账号 ({username}) 收到一个密码重置请求。请点击下面的链接设置新密码,链接 30 分钟后失效。',
 	'email.reset.cta': '重置密码',
 	'email.reset.ignore': '如果你没有请求重置,请忽略此邮件。',
 
@@ -1049,17 +1049,15 @@ const messages = {
 	'email.reminder.greeting': '你好,',
 	'email.reminder.body': '你有一个即将到期的提醒:',
 	'email.reminder.dueLine': '截止:{due}',
-	'email.reminder.cta': '查看详情',
-	'email.reminder.footer':
-		'You are receiving this because reminder email notifications are enabled in your EinVault settings.',
+	'email.reminder.cta': '在 Herp 中查看',
+	'email.reminder.footer': '你收到这封邮件是因为你在 Herp 设置里开启了提醒邮件通知。',
 
 	// Email: caretaker shift alerts
 	'email.shift.startSubject': '[Herp] 班次开始',
 	'email.shift.endSubject': '[Herp] 班次结束',
 	'email.shift.startBody': '你的照护班次已开始。',
 	'email.shift.endBody': '你的照护班次已结束。',
-	'email.shift.footer':
-		'You are receiving this because shift email notifications are enabled in your EinVault settings.',
+	'email.shift.footer': '你收到这封邮件是因为你在 Herp 设置里开启了班次邮件通知。',
 
 	// Search palette
 	'search.placeholder': '搜索日记、健康、提醒…',
@@ -1117,8 +1115,7 @@ const messages = {
 	'page.documents.download': '下载',
 	'page.documents.view': '查看',
 	'page.documents.delete': '删除',
-	'page.documents.deleteConfirmBody':
-		'This removes the document from EinVault. Paperless documents are not deleted from Paperless.',
+	'page.documents.deleteConfirmBody': '这将从 Herp 删除该文档。Paperless 中的文档不会被删除。',
 	'page.documents.editTitle': '编辑文档',
 	'page.documents.labelTitle': '标题',
 	'page.documents.labelCategory': '类别',
