@@ -81,7 +81,6 @@
 				</Select>
 			</div>
 
-
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 				<div class="space-y-1.5">
 					<Label for="breed">{t(locale, 'page.companion.labelBreed')}</Label>
@@ -111,8 +110,9 @@
 				<div class="space-y-1.5">
 					<Label for="weightUnit">{t(locale, 'page.companion.labelWeightUnit')}</Label>
 					<Select id="weightUnit" name="weightUnit">
-						<option value="lbs">lbs</option>
-						<option value="kg">kg</option>
+						<option value="kg" selected>{t(locale, 'enum.weightUnit.kg')}</option>
+						<option value="g">{t(locale, 'enum.weightUnit.g')}</option>
+						<option value="lbs">{t(locale, 'enum.weightUnit.lbs')}</option>
 					</Select>
 				</div>
 			</div>

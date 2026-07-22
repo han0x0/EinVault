@@ -12,7 +12,7 @@ export type { MessageKey };
 export type Locale = 'en' | 'it' | 'de' | 'es' | 'fr' | 'pt' | 'zh';
 
 export const SUPPORTED_LOCALES: Locale[] = ['de', 'en', 'es', 'fr', 'it', 'pt', 'zh'];
-export const DEFAULT_LOCALE: Locale = 'en';
+export const DEFAULT_LOCALE: Locale = 'zh';
 export const LOCALE_LABELS: Record<Locale, string> = {
 	en: 'English',
 	it: 'Italiano',
@@ -58,7 +58,7 @@ export function parseAcceptLanguage(header: string | null): Locale {
 
 	for (const { lang } of entries) {
 		const resolved = resolveLocale(lang);
-		if (resolved !== DEFAULT_LOCALE || lang.toLowerCase().startsWith('en')) return resolved;
+		if (resolved !== DEFAULT_LOCALE) return resolved;
 	}
 	return DEFAULT_LOCALE;
 }

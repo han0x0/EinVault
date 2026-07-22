@@ -220,8 +220,8 @@ export function parseRecurrence(data: FormData, dueAt: Date): ParsedRecurrence |
 
 // Weight unit
 
-export type WeightUnit = 'kg' | 'lbs';
-const WEIGHT_UNITS = ['kg', 'lbs'] as const satisfies readonly WeightUnit[];
+export type WeightUnit = 'kg' | 'g' | 'lbs';
+const WEIGHT_UNITS = ['kg', 'g', 'lbs'] as const satisfies readonly WeightUnit[];
 
 export function parseWeightUnit(value: string): WeightUnit {
 	return parseEnum(value, WEIGHT_UNITS) ?? 'kg';
@@ -253,7 +253,6 @@ const SEXES = ['male', 'female', 'unknown'] as const satisfies readonly Sex[];
 export function parseSex(value: string): Sex | null {
 	return parseEnum(value, SEXES);
 }
-
 
 // Species
 

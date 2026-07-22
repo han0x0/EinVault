@@ -2,7 +2,6 @@
 // Translation coverage: 975/975 keys (100%)
 // Generated from en.ts; any keys missing translations fall back to English.
 const messages = {
-
 	// Common
 	'common.save': '保存',
 	'common.saving': '保存中…',
@@ -102,6 +101,9 @@ const messages = {
 	'enum.species.cat': '猫',
 	'enum.species.mouse': '鼠',
 	'enum.species.reptile': '爬宠',
+	'enum.weightUnit.kg': '千克 (kg)',
+	'enum.weightUnit.g': '克 (g)',
+	'enum.weightUnit.lbs': '磅 (lbs)',
 
 	// Errors: Auth & setup
 	'error.unauthorized': '请先登录',
@@ -540,9 +542,9 @@ const messages = {
 	'overview.greeting': '你好,{name}',
 	'overview.needsAttention': '需要关注',
 	'overview.allCaughtUp': '一切正常',
-		'overview.speciesFilter.label': '按物种筛选宠物',
+	'overview.speciesFilter.label': '按物种筛选宠物',
 	'overview.speciesFilter.all': '全部',
-'overview.heading.companions': '我的宠物',
+	'overview.heading.companions': '我的宠物',
 	'overview.companions.addStart': '添加宠物',
 	'overview.firstRun.title': '欢迎使用 Herp',
 	'overview.firstRun.body':
@@ -988,7 +990,7 @@ const messages = {
 	'error.invalidOccurredAt':
 		'occurredAt must be a valid ISO 8601 date-time within the allowed range.',
 	'error.invalidWeight': '体重无效',
-	'error.invalidUnit': '单位无效',
+	'error.invalidUnit': '单位必须是 kg、g 或 lbs。',
 	'error.invalidRecordedAt':
 		'recordedAt must be a valid ISO 8601 date-time within the allowed range.',
 	'error.invalidPagination': '分页参数无效',
@@ -1144,7 +1146,7 @@ const messages = {
 	'demo.roleMember': '成员',
 	'demo.roleCaretaker': '照护者',
 	'demo.sourceLink': '查看源代码',
-	'demo.writeBlocked': '演示模式下无法写入数据',
+	'demo.writeBlocked': '演示模式下无法写入数据'
 
 	// Meta
 } as const;

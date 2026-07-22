@@ -30,7 +30,7 @@ export const SEED = {
 			breed: 'Pembroke Welsh Corgi',
 			sex: 'male',
 			dob: '2022-03-15',
-			weightUnit: 'lbs',
+			weightUnit: 'kg',
 			microchip: '981020012345678',
 			bio: 'A Pembroke Welsh Corgi with a quiet secret: he is a data dog, the product of a research lab that left him improbably, almost unnervingly intelligent. Patient, unbothered, and far more aware of what is going on than he ever lets show.',
 			feedingSchedule: 'Half cup of kibble at 7am and 6pm.',
@@ -51,7 +51,7 @@ export const SEED = {
 			breed: 'Mixed breed (mostly mischief)',
 			sex: 'female',
 			dob: '2024-09-02',
-			weightUnit: 'lbs',
+			weightUnit: 'kg',
 			microchip: '981020087654321',
 			bio: 'Named after a one-of-a-kind kid and just as untamable. A barefoot-at-heart mutt who treats the whole house as a playground and every closed door as a personal challenge. Pure chaos with a wagging tail.',
 			feedingSchedule: 'Free-fed kibble; extra treats only after she does a trick.',
@@ -339,40 +339,40 @@ export function seedContent(
 			{
 				id: 'seed-weight-1',
 				companionId: ein,
-				weight: 24.2,
-				unit: 'lbs',
+				weight: 11,
+				unit: 'kg',
 				recordedAt: new Date(now - 150 * day),
 				loggedBy: jet
 			},
 			{
 				id: 'seed-weight-2',
 				companionId: ein,
-				weight: 24.8,
-				unit: 'lbs',
+				weight: 11.2,
+				unit: 'kg',
 				recordedAt: new Date(now - 110 * day),
 				loggedBy: jet
 			},
 			{
 				id: 'seed-weight-3',
 				companionId: ein,
-				weight: 25.3,
-				unit: 'lbs',
+				weight: 11.5,
+				unit: 'kg',
 				recordedAt: new Date(now - 70 * day),
 				loggedBy: jet
 			},
 			{
 				id: 'seed-weight-4',
 				companionId: ein,
-				weight: 25.1,
-				unit: 'lbs',
+				weight: 11.4,
+				unit: 'kg',
 				recordedAt: new Date(now - 35 * day),
 				loggedBy: jet
 			},
 			{
 				id: 'seed-weight-5',
 				companionId: ein,
-				weight: 25.6,
-				unit: 'lbs',
+				weight: 11.6,
+				unit: 'kg',
 				recordedAt: new Date(now - 5 * day),
 				loggedBy: jet
 			},
@@ -380,32 +380,32 @@ export function seedContent(
 			{
 				id: 'seed-weight-e1',
 				companionId: edward,
-				weight: 17.8,
-				unit: 'lbs',
+				weight: 8.1,
+				unit: 'kg',
 				recordedAt: new Date(now - 120 * day),
 				loggedBy: jet
 			},
 			{
 				id: 'seed-weight-e2',
 				companionId: edward,
-				weight: 18.6,
-				unit: 'lbs',
+				weight: 8.4,
+				unit: 'kg',
 				recordedAt: new Date(now - 80 * day),
 				loggedBy: jet
 			},
 			{
 				id: 'seed-weight-e3',
 				companionId: edward,
-				weight: 19.2,
-				unit: 'lbs',
+				weight: 8.7,
+				unit: 'kg',
 				recordedAt: new Date(now - 40 * day),
 				loggedBy: jet
 			},
 			{
 				id: 'seed-weight-e4',
 				companionId: edward,
-				weight: 19.0,
-				unit: 'lbs',
+				weight: 8.6,
+				unit: 'kg',
 				recordedAt: new Date(now - 8 * day),
 				loggedBy: jet
 			}

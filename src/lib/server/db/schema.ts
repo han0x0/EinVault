@@ -1,4 +1,4 @@
-import { sql, relations } from 'drizzle-orm';
+﻿import { sql, relations } from 'drizzle-orm';
 import {
 	integer,
 	sqliteTable,
@@ -32,7 +32,7 @@ export const users = sqliteTable(
 			.default('system'),
 		locale: text('locale', { enum: ['en', 'it', 'de', 'es', 'fr', 'pt', 'zh'] })
 			.notNull()
-			.default('en'),
+			.default('zh'),
 		email: text('email'),
 		phone: text('phone'),
 		oidcSubject: text('oidc_subject'),
@@ -54,7 +54,7 @@ export const users = sqliteTable(
 		// receives both categories (reminders, shift alerts) within their
 		// role's visibility scope. Null = no pushes.
 		ntfyTopic: text('ntfy_topic'),
-		// Profile photo — mirrors the companion avatar columns.
+		// Profile photo 鈥?mirrors the companion avatar columns.
 		avatarPath: text('avatar_path'),
 		avatarProvider: text('avatar_provider'),
 		avatarStorageKey: text('avatar_storage_key'),
@@ -110,7 +110,7 @@ export const sessions = sqliteTable(
 export const passwordResetTokens = sqliteTable(
 	'password_reset_tokens',
 	{
-		// sha256 hex of the raw token — same storage pattern as sessions.id, so a
+		// sha256 hex of the raw token 鈥?same storage pattern as sessions.id, so a
 		// DB leak never exposes a usable token.
 		id: text('id').primaryKey(),
 		userId: text('user_id')
@@ -150,7 +150,7 @@ export const notificationOutbox = sqliteTable(
 		payload: text('payload', { mode: 'json' }).$type<OutboxPayload>().notNull(),
 		// queued -> claimed -> sent | skipped | failed; claimed rows orphaned by a
 		// crash are reset to queued at boot. skipped = conditions no longer hold
-		// (reminder completed, user opted out, shift already started) — not an error.
+		// (reminder completed, user opted out, shift already started) 鈥?not an error.
 		status: text('status', { enum: ['queued', 'claimed', 'sent', 'skipped', 'failed'] })
 			.notNull()
 			.default('queued'),
@@ -176,9 +176,9 @@ export const companions = sqliteTable(
 		breed: text('breed'),
 		dob: text('dob'),
 		sex: text('sex', { enum: ['male', 'female', 'unknown'] }),
-		weightUnit: text('weight_unit', { enum: ['kg', 'lbs'] })
+		weightUnit: text('weight_unit', { enum: ['kg', 'g', 'lbs'] })
 			.notNull()
-			.default('lbs'),
+			.default('kg'),
 		microchip: text('microchip'),
 		avatarPath: text('avatar_path'),
 		avatarProvider: text('avatar_provider', { enum: ['local', 's3', 'immich'] })
@@ -322,7 +322,7 @@ export const documents = sqliteTable(
 		healthEventId: text('health_event_id').references(() => healthEvents.id, {
 			onDelete: 'set null'
 		}),
-		// `{documentId}.{ext}` — server-generated, never derived from the
+		// `{documentId}.{ext}` 鈥?server-generated, never derived from the
 		// uploaded filename. Used in /api/documents URLs.
 		filename: text('filename').notNull(),
 		provider: text('provider', { enum: ['local', 's3', 'paperless'] })
@@ -359,7 +359,7 @@ export const weightEntries = sqliteTable(
 			.notNull()
 			.references(() => companions.id, { onDelete: 'cascade' }),
 		weight: real('weight').notNull(),
-		unit: text('unit', { enum: ['kg', 'lbs'] }).notNull(),
+		unit: text('unit', { enum: ['kg', 'g', 'lbs'] }).notNull(),
 		recordedAt: integer('recorded_at', { mode: 'timestamp' }).notNull(),
 		notes: text('notes'),
 		createdAt: integer('created_at', { mode: 'timestamp' })

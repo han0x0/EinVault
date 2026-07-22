@@ -4,6 +4,7 @@
 	import CompanionAvatar from '$lib/components/CompanionAvatar.svelte';
 	import CompanionSpeciesBadge from '$lib/components/CompanionSpeciesBadge.svelte';
 	import WeightSparkline from '$lib/components/WeightSparkline.svelte';
+	import { convertWeight, type WeightPoint } from '$lib/weightChart';
 	import LocalTime from '$lib/components/LocalTime.svelte';
 	import ByLine from '$lib/components/ByLine.svelte';
 	import { localDateISO } from '$lib/date';
@@ -92,11 +93,16 @@
 	);
 	let activityCount = $derived(recentDaily.length);
 
-	// Weight sparkline points — map weight+recordedAt to {date, kg}
-	// We show in whatever unit is stored; the sparkline uses raw numeric values
-	let sparklinePoints = $derived(
-		[...recentWeights].reverse().map((w) => ({ date: w.recordedAt, kg: w.weight }))
-	);
+	// Weight sparkline points: convert every entry into the latest entry’s unit so the
+	// line is consistent even when the companion switches units over time.
+	let sparklinePoints = $derived.by(() => {
+		const ascending = [...recentWeights].reverse();
+		const latestUnit = (ascending.at(-1)?.unit ?? 'kg') as WeightPoint['unit'];
+		return ascending.map((w) => ({
+			date: w.recordedAt,
+			value: convertWeight(w.weight, w.unit as WeightPoint['unit'], latestUnit)
+		}));
+	});
 
 	// Merged activity timeline: recentDaily + recentHealth, newest first, capped at 8
 	type ActivityItem =

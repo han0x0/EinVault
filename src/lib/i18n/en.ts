@@ -98,6 +98,9 @@ const messages = {
 	'enum.species.cat': 'Cat',
 	'enum.species.mouse': 'Mouse',
 	'enum.species.reptile': 'Reptile',
+	'enum.weightUnit.kg': 'kg',
+	'enum.weightUnit.g': 'g',
+	'enum.weightUnit.lbs': 'lbs',
 
 	// Errors: Auth & setup
 	'error.unauthorized': 'Unauthorized.',
@@ -536,9 +539,9 @@ const messages = {
 	'overview.greeting': 'Hello, {name}',
 	'overview.needsAttention': 'Needs attention',
 	'overview.allCaughtUp': 'All caught up',
-		'overview.speciesFilter.label': 'Filter companions by species',
+	'overview.speciesFilter.label': 'Filter companions by species',
 	'overview.speciesFilter.all': 'All',
-'overview.heading.companions': 'Your companions',
+	'overview.heading.companions': 'Your companions',
 	'overview.companions.addStart': 'Start a new vault',
 	'overview.firstRun.title': 'Welcome to EinVault',
 	'overview.firstRun.body':
@@ -984,7 +987,7 @@ const messages = {
 	'error.invalidOccurredAt':
 		'occurredAt must be a valid ISO 8601 date-time within the allowed range.',
 	'error.invalidWeight': 'Weight must be a positive number.',
-	'error.invalidUnit': 'Unit must be kg or lbs.',
+	'error.invalidUnit': 'Unit must be kg, g, or lbs.',
 	'error.invalidRecordedAt':
 		'recordedAt must be a valid ISO 8601 date-time within the allowed range.',
 	'error.invalidPagination': 'limit must be 1-200 and offset must be 0 or more.',

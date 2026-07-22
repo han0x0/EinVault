@@ -1,17 +1,27 @@
 export interface WeightPoint {
 	recordedAt: Date;
 	weight: number;
-	unit: 'lbs' | 'kg';
+	unit: 'lbs' | 'kg' | 'g';
 }
 
 export type WeightRange = '6m' | '1y' | 'all';
 
 const LBS_PER_KG = 2.2046226218;
 
-/** Convert a weight between lbs and kg. */
-export function convertWeight(weight: number, from: 'lbs' | 'kg', to: 'lbs' | 'kg'): number {
+/** Convert a weight between any two of {lbs, kg, g}. g <-> kg is a fixed 1000 ratio. */
+export function convertWeight(
+	weight: number,
+	from: 'lbs' | 'kg' | 'g',
+	to: 'lbs' | 'kg' | 'g'
+): number {
 	if (from === to) return weight;
-	return from === 'kg' ? weight * LBS_PER_KG : weight / LBS_PER_KG;
+	// Normalize both endpoints to grams so each conversion is a single ratio.
+	const toGrams = (w: number, u: 'lbs' | 'kg' | 'g'): number =>
+		u === 'g' ? w : u === 'kg' ? w * 1000 : (w * 1000) / LBS_PER_KG;
+	const grams = toGrams(weight, from);
+	if (to === 'g') return grams;
+	if (to === 'kg') return grams / 1000;
+	return (grams / 1000) * LBS_PER_KG;
 }
 
 /** Keep points within the range, relative to `now`. Assumes input is sorted ascending by recordedAt. */

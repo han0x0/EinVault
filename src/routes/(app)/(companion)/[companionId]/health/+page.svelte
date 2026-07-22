@@ -643,10 +643,9 @@
 						<div class="space-y-1.5">
 							<Label for="unit">{t(locale, 'page.health.labelUnit')}</Label>
 							<Select id="unit" name="unit">
-								<option value={data.companion.weightUnit}>{data.companion.weightUnit}</option>
-								<option value={data.companion.weightUnit === 'lbs' ? 'kg' : 'lbs'}>
-									{data.companion.weightUnit === 'lbs' ? 'kg' : 'lbs'}
-								</option>
+								{#each ['kg', 'g', 'lbs'] as const as u (u)}
+									<option value={u} selected={data.companion.weightUnit === u}>{u}</option>
+								{/each}
 							</Select>
 						</div>
 					</div>
@@ -734,8 +733,9 @@
 									<div class="space-y-1.5">
 										<Label for="edit-unit-{entry.id}">{t(locale, 'page.health.labelUnit')}</Label>
 										<Select id="edit-unit-{entry.id}" name="unit">
-											<option value="lbs" selected={entry.unit === 'lbs'}>lbs</option>
-											<option value="kg" selected={entry.unit === 'kg'}>kg</option>
+											{#each ['kg', 'g', 'lbs'] as const as u (u)}
+												<option value={u} selected={entry.unit === u}>{u}</option>
+											{/each}
 										</Select>
 									</div>
 								</div>

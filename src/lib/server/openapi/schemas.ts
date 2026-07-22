@@ -189,7 +189,7 @@ export const HealthWriteResponse = z
 	.object({ id: z.string(), companionId: z.string() })
 	.openapi('HealthWriteResponse');
 
-export const WeightUnit = z.enum(['kg', 'lbs']).openapi('WeightUnit');
+export const WeightUnit = z.enum(['kg', 'g', 'lbs']).openapi('WeightUnit');
 
 export const WeightRequest = z
 	.object({

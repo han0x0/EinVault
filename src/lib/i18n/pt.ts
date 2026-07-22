@@ -60,6 +60,9 @@ const messages: Record<keyof Messages, string> = {
 	'enum.species.cat': 'Cat',
 	'enum.species.mouse': 'Mouse',
 	'enum.species.reptile': 'Reptile',
+	'enum.weightUnit.kg': 'kg',
+	'enum.weightUnit.g': 'g',
+	'enum.weightUnit.lbs': 'lb',
 
 	// Enum: Activity subtypes
 	'enum.activitySubtype.pee': 'Xixi',
@@ -1003,7 +1006,7 @@ const messages: Record<keyof Messages, string> = {
 	'error.invalidOccurredAt':
 		'occurredAt deve ser uma data-hora ISO 8601 válida dentro do intervalo permitido.',
 	'error.invalidWeight': 'O peso deve ser um número positivo.',
-	'error.invalidUnit': 'A unidade deve ser kg ou lbs.',
+	'error.invalidUnit': 'A unidade deve ser kg, g ou lbs.',
 	'error.invalidRecordedAt':
 		'recordedAt deve ser uma data-hora ISO 8601 válida dentro do intervalo permitido.',
 	'error.invalidPagination': 'limit deve estar entre 1 e 200 e offset deve ser 0 ou mais.',

@@ -191,13 +191,20 @@
 				<div class="space-y-1.5">
 					<Label for="species">{t(locale, 'page.companion.labelSpecies')}</Label>
 					<Select id="species" name="species">
-						<option value="dog" selected={companion.species === 'dog'}>{t(locale, 'enum.species.dog')}</option>
-						<option value="cat" selected={companion.species === 'cat'}>{t(locale, 'enum.species.cat')}</option>
-						<option value="mouse" selected={companion.species === 'mouse'}>{t(locale, 'enum.species.mouse')}</option>
-						<option value="reptile" selected={companion.species === 'reptile'}>{t(locale, 'enum.species.reptile')}</option>
+						<option value="dog" selected={companion.species === 'dog'}
+							>{t(locale, 'enum.species.dog')}</option
+						>
+						<option value="cat" selected={companion.species === 'cat'}
+							>{t(locale, 'enum.species.cat')}</option
+						>
+						<option value="mouse" selected={companion.species === 'mouse'}
+							>{t(locale, 'enum.species.mouse')}</option
+						>
+						<option value="reptile" selected={companion.species === 'reptile'}
+							>{t(locale, 'enum.species.reptile')}</option
+						>
 					</Select>
 				</div>
-
 
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div class="space-y-1.5">
@@ -232,8 +239,15 @@
 					<div class="space-y-1.5">
 						<Label for="weightUnit">{t(locale, 'page.companion.labelWeightUnit')}</Label>
 						<Select id="weightUnit" name="weightUnit">
-							<option value="lbs" selected={companion.weightUnit === 'lbs'}>lbs</option>
-							<option value="kg" selected={companion.weightUnit === 'kg'}>kg</option>
+							<option value="kg" selected={companion.weightUnit === 'kg'}
+								>{t(locale, 'enum.weightUnit.kg')}</option
+							>
+							<option value="g" selected={companion.weightUnit === 'g'}
+								>{t(locale, 'enum.weightUnit.g')}</option
+							>
+							<option value="lbs" selected={companion.weightUnit === 'lbs'}
+								>{t(locale, 'enum.weightUnit.lbs')}</option
+							>
 						</Select>
 					</div>
 				</div>

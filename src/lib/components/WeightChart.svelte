@@ -32,7 +32,7 @@
 	let visible = $derived(filterByRange(entries, range, ref));
 	let effective = $derived(visible.length < 2 && entries.length >= 2 ? entries : visible);
 	let latest = $derived(entries.at(-1) ?? null);
-	let displayUnit = $derived(latest?.unit ?? 'lbs');
+	let displayUnit = $derived(latest?.unit ?? 'kg');
 	let normalized = $derived(effective.map((p) => convertWeight(p.weight, p.unit, displayUnit)));
 	let values = $derived(normalized);
 	let areaPath = $derived(buildAreaPath(values, W, H));

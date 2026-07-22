@@ -2,7 +2,7 @@
 	import { buildSparklinePath } from './weightSparkline.js';
 
 	interface Props {
-		points: { date: Date | string; kg: number }[];
+		points: { date: Date | string; value: number }[];
 		width?: number;
 		height?: number;
 		class?: string;
@@ -10,7 +10,7 @@
 
 	let { points, width = 120, height = 36, class: className = '' }: Props = $props();
 
-	let values = $derived(points.map((p) => p.kg));
+	let values = $derived(points.map((p) => p.value));
 	let linePath = $derived(buildSparklinePath(values, width, height));
 
 	// Area fill: close the path back along the bottom edge

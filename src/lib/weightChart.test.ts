@@ -8,7 +8,7 @@ import {
 	type WeightPoint
 } from './weightChart';
 
-const P = (recordedAt: string, weight: number, unit: 'lbs' | 'kg' = 'lbs'): WeightPoint => ({
+const P = (recordedAt: string, weight: number, unit: 'lbs' | 'kg' | 'g' = 'lbs'): WeightPoint => ({
 	recordedAt: new Date(recordedAt),
 	weight,
 	unit
@@ -88,5 +88,15 @@ describe('convertWeight', () => {
 	});
 	it('converts lbs to kg', () => {
 		expect(convertWeight(22.0462, 'lbs', 'kg')).toBeCloseTo(10, 3);
+	});
+	it('converts g to kg and back', () => {
+		expect(convertWeight(1000, 'g', 'kg')).toBeCloseTo(1, 6);
+		expect(convertWeight(1, 'kg', 'g')).toBeCloseTo(1000, 6);
+	});
+	it('converts g to lbs (1500 g ~ 3.3069 lbs)', () => {
+		expect(convertWeight(1500, 'g', 'lbs')).toBeCloseTo(3.3069, 3);
+	});
+	it('converts lbs to g', () => {
+		expect(convertWeight(1, 'lbs', 'g')).toBeCloseTo(453.592, 2);
 	});
 });
