@@ -228,6 +228,7 @@ const messages = {
 	'layout.addCompanion': '添加宠物',
 	'layout.addFirstCompanion': '添加第一只宠物',
 	'layout.switchCompanion': '切换宠物',
+	'layout.workspaceTagline': '宠物记录',
 
 	// Layout: caretaker
 	'layout.caretaker.onShift': '当班中',

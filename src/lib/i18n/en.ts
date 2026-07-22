@@ -224,6 +224,7 @@ const messages = {
 	'layout.addCompanion': 'Add a Companion',
 	'layout.addFirstCompanion': 'Add Your First Companion',
 	'layout.switchCompanion': 'Switch companion',
+	'layout.workspaceTagline': 'Pet tracker',
 
 	// Layout: caretaker
 	'layout.caretaker.onShift': 'On shift, ends',

@@ -129,20 +129,23 @@
 	class="flex flex-col h-full w-60 shrink-0 border-r border-border bg-card"
 	aria-label={t(locale, 'aria.mainNav')}
 >
-	<!-- Brand -->
+	<!-- Brand / workspace header -->
 	<a
 		href="/"
 		aria-label={t(locale, 'aria.einvaultHome')}
-		class="group flex items-center gap-2.5 px-4 py-5 shrink-0"
+		class="group flex items-center gap-3 px-4 py-5 shrink-0 border-b border-border/60"
 	>
 		<div
-			class="w-7 h-7 rounded-lg shrink-0 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 group-hover:-rotate-6"
-			style="background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.6))"
+			class="h-9 w-9 rounded-xl shrink-0 flex items-center justify-center transition-transform duration-200 group-hover:scale-105 group-hover:-rotate-6 glow-brand"
+			style="background: var(--brand-gradient)"
 			aria-hidden="true"
 		>
-			<PawLogo class="w-4 h-4 text-white" />
+			<PawLogo class="w-5 h-5 text-white" />
 		</div>
-		<span class="font-display font-bold text-base text-foreground">Herp</span>
+		<div class="min-w-0">
+			<p class="font-display font-bold text-base text-foreground leading-tight">Herp</p>
+			<p class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider leading-tight mt-0.5">{t(locale, 'layout.workspaceTagline')}</p>
+		</div>
 	</a>
 
 	<!-- Context control -->
@@ -317,13 +320,11 @@
 				<a
 					href={item.href}
 					aria-current={isActive ? 'page' : undefined}
-					class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors mb-0.5 {isActive
-						? 'text-foreground'
+					class="relative flex items-center gap-2.5 rounded-lg pl-4 pr-3 py-2 text-sm font-medium transition-colors mb-0.5 {isActive
+						? 'text-primary bg-primary/10'
 						: 'text-muted-foreground hover:text-foreground hover:bg-accent'}"
-					style={isActive
-						? 'background: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--primary) / 0.08));'
-						: ''}
 				>
+					{#if isActive}<span class="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-primary" aria-hidden="true"></span>{/if}
 					<NavIcon class="h-4 w-4 shrink-0 {isActive ? 'text-primary' : 'text-muted-foreground'}" />
 					{item.label}
 				</a>

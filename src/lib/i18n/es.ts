@@ -238,6 +238,7 @@ const messages: Record<keyof Messages, string> = {
 	'layout.addCompanion': 'Añadir compañero',
 	'layout.addFirstCompanion': 'Añade tu primer compañero',
 	'layout.switchCompanion': 'Cambiar compañero',
+	'layout.workspaceTagline': 'Pet tracker',
 
 	// Layout: caretaker
 	'layout.caretaker.onShift': 'En turno, termina',
