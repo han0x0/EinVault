@@ -4,11 +4,11 @@
 	"description": "Self-hosted pet health and care tracker for homelabs.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/han0x0/Herp.git"
+		"url": "git+https://github.com/han0x0/herp.git"
 	},
-	"homepage": "https://github.com/han0x0/Herp",
+	"homepage": "https://github.com/han0x0/herp",
 	"bugs": {
-		"url": "https://github.com/han0x0/Herp/issues"
+		"url": "https://github.com/han0x0/herp/issues"
 	},
 	"keywords": [
 		"pets",
