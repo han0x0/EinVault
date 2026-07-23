@@ -298,7 +298,7 @@ const messages = {
 	'page.settings.defaultRecurrenceCard': '默认循环单位',
 	'page.settings.defaultRecurrenceDescription': '新建提醒时默认显示的循环单位。',
 	'page.settings.defaultRecurrenceLabel': '默认单位',
-	'page.settings.defaultRecurrenceSystem': '系统默认 ({unit})',
+	'page.settings.defaultRecurrenceSystem': '系统默认(随应用设置)',
 	'page.settings.defaultRecurrenceUpdated': '默认循环单位已更新',
 	'page.settings.notificationsCard': '通知',
 	'page.settings.notificationsDescription':
@@ -506,25 +506,25 @@ const messages = {
 	'page.companion.edit.cardSitterNotes': '照护备注',
 	'page.companion.edit.labelNotesForSitter': '给照护者的备注',
 	'page.companion.edit.placeholderFeedingSchedule':
-		'e.g. 7:00am: 1 cup kibble\n6:00pm: 1 cup kibble\nTreats OK after walks',
+		'例如:7:00 早餐 1 杯狗粮\n      18:00 晚餐 1 杯狗粮\n      散步后可给零食',
 	'page.companion.edit.placeholderWalkSchedule':
-		'e.g. Morning ~7am, 30 min\nEvening ~5:30pm, 20–30 min\nAvoid the dog park on weekdays',
+		'例如:早晨 7:00 左右,散步 30 分钟\n      傍晚 17:30 左右,散步 20–30 分钟\n      工作日避开宠物公园',
 	'page.companion.edit.placeholderMedicationSchedule':
-		'e.g. Heartworm chew 1st of the month\nJoint supplement daily with breakfast\nEye drops morning and night',
+		'例如:每月 1 号喂心丝虫咀嚼片\n      早餐时随餐服用关节保健品\n      早晚滴眼药水',
 	'page.companion.edit.placeholderSitterNotes':
-		'Anything a sitter or walker should know: quirks, fears, favorite spots…',
+		'例如照护者需要知道的:小怪癖、害怕的东西、最爱去的地方…',
 	'page.companion.edit.placeholderMicrochip': '芯片号',
 	'page.companion.edit.placeholderVetName': '兽医姓名',
 	'page.companion.edit.placeholderVetClinic': '宠物医院',
 	'page.companion.edit.placeholderEmergencyContact': '紧急联系人',
-	'page.companion.edit.placeholderArchiveNote': '归档原因',
+	'page.companion.edit.placeholderArchiveNote': '例如:已离世(跨过彩虹桥)',
 	'page.companion.edit.profilePhoto': '头像',
 	'page.companion.edit.saveChanges': '保存修改',
 	'page.companion.edit.saving': '保存中…',
 	'page.companion.edit.changesSaved': '修改已保存',
 	'page.companion.edit.cardArchive': '归档',
 	'page.companion.edit.archiveDescription':
-		'{name} will be moved to your past companions. All journal entries, health records, and photos will be preserved and remain viewable. You can restore {name} at any time.',
+		'"{name}" 将被移至「过往宠物」中。日记、健康记录和照片会全部保留并继续可见。你可以随时恢复 "{name}"。',
 	'page.companion.edit.archiveButton': '归档宠物',
 	'page.companion.edit.archiving': '归档中…',
 	'page.companion.edit.archive': '确认归档',

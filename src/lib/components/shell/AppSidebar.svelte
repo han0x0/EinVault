@@ -16,6 +16,7 @@
 		PlusCircle
 	} from '@lucide/svelte';
 	import { t, getLocale } from '$lib/i18n';
+	import { roleLabel } from '$lib/i18n/labels';
 	import type { CareStatus } from '$lib/careStatus';
 	import AccountSheet from './AccountSheet.svelte';
 
@@ -381,7 +382,9 @@
 					/>
 					<div class="flex-1 min-w-0">
 						<p class="text-xs font-medium text-foreground truncate">{user.displayName}</p>
-						<p class="text-[10px] text-muted-foreground capitalize">{user.role}</p>
+						<p class="text-[10px] text-muted-foreground capitalize">
+							{roleLabel(locale, user.role)}
+						</p>
 					</div>
 					<ChevronDown
 						class="h-4 w-4 shrink-0 text-muted-foreground transition-transform {accountOpen

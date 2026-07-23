@@ -3,6 +3,7 @@
 	import { Settings, LogOut, ShieldCheck, PawPrint, X } from '@lucide/svelte';
 	import { tick } from 'svelte';
 	import { t, getLocale } from '$lib/i18n';
+	import { roleLabel } from '$lib/i18n/labels';
 
 	type User = {
 		id: string;
@@ -71,7 +72,7 @@
 			/>
 			<div class="min-w-0 flex-1">
 				<p class="text-sm font-semibold text-foreground truncate">{user.displayName}</p>
-				<p class="text-[11px] text-muted-foreground capitalize">{user.role}</p>
+				<p class="text-[11px] text-muted-foreground capitalize">{roleLabel(locale, user.role)}</p>
 			</div>
 			{#if variant === 'sheet'}
 				<button
