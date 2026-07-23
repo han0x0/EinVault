@@ -69,8 +69,6 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-
-
   ci-ok:
     needs: [lint, test-unit, build]
     if: always()
